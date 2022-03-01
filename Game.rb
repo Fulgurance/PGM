@@ -1,12 +1,6 @@
-require 'gosu'
-
-require 'json'
-require 'gl'
+require 'opengl'
 require 'glu'
-require 'glut'
-include Gl
-include Glu
-
+require 'gosu'
 require './Color'
 require './Font'
 require './Text'
