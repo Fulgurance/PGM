@@ -15,7 +15,6 @@ require './GameMapScene'
 require './StartingCredits'
 require './TitleScreen'
 require './LoadingScreen'
-require './Test3D'
 require './MapTest'
 
 $gameWindow = GameWindow.new("Pokemon",940,528)
