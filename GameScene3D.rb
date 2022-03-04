@@ -7,11 +7,11 @@ class GameScene3D < GameScene
 
   def draw
     Gosu.gl do
-      updateGraphics
+      drawGraphics
     end
   end
 
-  def updateGraphics
+  def drawGraphics
   end
 
 end

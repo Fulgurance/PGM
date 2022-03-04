@@ -1,6 +1,7 @@
 class GameMapPlayer < GameMapObject
 
     attr_accessor :spriteName
+    attr_accessor :sprite
     attr_accessor :direction
     attr_accessor :speed
     attr_accessor :animationSpeed
