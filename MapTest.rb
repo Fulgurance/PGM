@@ -1,230 +1,108 @@
-class Test3D < GameScene
+class MapTest < GameMapScene
 
   def initialize
-    GL.load_lib()
-    GLU.load_lib()
+    super
 
     @texture = Sprite.new('Test.png', retro: true)
     @texture1 = Sprite.new('Test1.png', retro: true)
     @texture2 = Sprite.new('Tree.png', retro: true)
-    @texture3 = Sprite.new('RedDown.png', retro: true)
     @texture4 = Sprite.new('Panel.png', retro: true)
     @texture5 = Sprite.new('Test2.png', retro: true)
 
-    @viewAngle = 45.0
-    @cameraX,@cameraY = 0,-320
-    @viewX,@viewY = 0,-64
-    @characterX,@characterY = 0,-64
-    @speed = 1.3
-    @caseSize = 32
-    @currentMovementDistance = 0
-    @releasedButtonTime = 0
-    @direction = 3
-    @movingLeft,@movingRight,@movingUp,@movingDown = false
-    @movingFrame = 0
-    @timeBetweenFrame = 0.20
+    @releasedButtonTime = 0.0
     @startingTime = Time.now
     @inputLeftTime,@inputRightTime,@inputUpTime,@inputDownTime = Time.now
-    @delayBeforeMove = 0.3
 
-    #@backgroundMusic = Gosu::Song.new("Test.wav")
-    #@backgroundMusic.play(true)
-  end
+    @player = GameMapPlayer.new("Red",0,-64,0)
 
-  def lookLeftDirection
-    @movingFrame = 0
-    @texture3.insert('RedLeft.png',0,0)
-  end
-
-  def lookRightDirection
-    @movingFrame = 0
-    @texture3.insert('RedRight.png',0,0)
-  end
-
-  def lookUpDirection
-    @movingFrame = 0
-    @texture3.insert('RedUp.png',0,0)
-  end
-
-  def lookDownDirection
-    @movingFrame = 0
-    @texture3.insert('RedDown.png',0,0)
-  end
-
-  def moveLeft
-    @movingLeft = true
-    @currentMovementDistance += @speed
-    @characterX -= @speed
-    @cameraX -= @speed
-    @viewX -= @speed
-    playMovingLeft
-  end
-
-  def moveRight
-    @movingRight = true
-    @currentMovementDistance += @speed
-    @characterX += @speed
-    @cameraX += @speed
-    @viewX += @speed
-    playMovingRight
-  end
-
-  def moveUp
-    @movingUp = true
-    @currentMovementDistance += @speed
-    @characterY += @speed
-    @cameraY += @speed
-    @viewY += @speed
-    playMovingUp
-  end
-
-  def moveDown
-    @movingDown = true
-    @currentMovementDistance += @speed
-    @characterY -= @speed
-    @cameraY -= @speed
-    @viewY -= @speed
-    playMovingDown
-  end
-
-  def playMovingLeft
-    if @movingFrame == 0
-      @texture3.insert('RedMoveLeft1.png',0,0)
-    elsif @movingFrame == 1
-      @texture3.insert('RedLeft.png',0,0)
-    elsif @movingFrame == 2
-      @texture3.insert('RedMoveLeft2.png',0,0)
-    else
-      @texture3.insert('RedLeft.png',0,0)
-    end
-  end
-
-  def playMovingRight
-    if @movingFrame == 0
-      @texture3.insert('RedMoveRight1.png',0,0)
-    elsif @movingFrame == 1
-      @texture3.insert('RedRight.png',0,0)
-    elsif @movingFrame == 2
-      @texture3.insert('RedMoveRight2.png',0,0)
-    else
-      @texture3.insert('RedRight.png',0,0)
-    end
-  end
-
-  def playMovingUp
-    if @movingFrame == 0
-      @texture3.insert('RedMoveUp1.png',0,0)
-    elsif @movingFrame == 1
-      @texture3.insert('RedUp.png',0,0)
-    elsif @movingFrame == 2
-      @texture3.insert('RedMoveUp2.png',0,0)
-    else
-      @texture3.insert('RedUp.png',0,0)
-    end
-  end
-
-  def playMovingDown
-    if @movingFrame == 0
-      @texture3.insert('RedMoveDown1.png',0,0)
-    elsif @movingFrame == 1
-      @texture3.insert('RedDown.png',0,0)
-    elsif @movingFrame == 2
-      @texture3.insert('RedMoveDown2.png',0,0)
-    else
-      @texture3.insert('RedDown.png',0,0)
-    end
+    @backgroundMusic = Gosu::Song.new("Test.wav")
+    @backgroundMusic.play(true)
   end
 
   def update
-    if @movingLeft || @movingRight || @movingUp || @movingDown
-      if @currentMovementDistance < @caseSize &&
-          (Time.now.to_f-@startingTime.to_f) > @timeBetweenFrame
-        @movingFrame += 1
-        if @movingFrame > 3
-          @movingFrame = 0
+    if @player.movingLeft || @player.movingRight || @player.movingUp || @player.movingDown
+      if @player.currentMovementDistance < self.squareSize &&
+          (Time.now.to_f-@startingTime.to_f) > @player.animationSpeed
+        @player.movingFrame += 1
+        if @player.movingFrame > 3
+          @player.movingFrame = 0
         end
         @startingTime = Time.now
       end
     end
-    if @movingLeft && @currentMovementDistance < @caseSize
-      moveLeft
-    elsif @movingRight && @currentMovementDistance < @caseSize
-      moveRight
-    elsif @movingUp && @currentMovementDistance < @caseSize
-      moveUp
-    elsif @movingDown && @currentMovementDistance < @caseSize
-      moveDown
+    if @player.movingLeft && @player.currentMovementDistance < self.squareSize
+      @player.moveLeft
+    elsif @player.movingRight && @player.currentMovementDistance < self.squareSize
+      @player.moveRight
+    elsif @player.movingUp && @player.currentMovementDistance < self.squareSize
+      @player.moveUp
+    elsif @player.movingDown && @player.currentMovementDistance < self.squareSize
+      @player.moveDown
     else
-      @currentMovementDistance = 0
-      @movingLeft,@movingRight,@movingUp,@movingDown = false
+      @player.currentMovementDistance = 0
+      @player.movingLeft,@player.movingRight,@player.movingUp,@player.movingDown = false
       if Gosu.button_down?(Gosu::KB_LEFT)
-        @direction = 0
-        if (Time.now.to_f-@inputLeftTime.to_f) > @delayBeforeMove
+        @player.direction = 0
+        if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
-            moveLeft
+            @player.moveLeft
           end
         end
       elsif Gosu.button_down?(Gosu::KB_RIGHT)
-        @direction = 1
-        if (Time.now.to_f-@inputRightTime.to_f) > @delayBeforeMove
+        @player.direction = 1
+        if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
-            moveRight
+            @player.moveRight
           end
         end
       elsif Gosu.button_down?(Gosu::KB_UP)
-        @direction = 2
-        if (Time.now.to_f-@inputUpTime.to_f) > @delayBeforeMove
+        @player.direction = 2
+        if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
-            moveUp
+            @player.moveUp
           end
         end
       elsif Gosu.button_down?(Gosu::KB_DOWN)
-        @direction = 3
-        if (Time.now.to_f-@inputDownTime.to_f) > @delayBeforeMove
+        @player.direction = 3
+        if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
-            moveDown
+            @player.moveDown
           end
         end
       else
-        if (Time.now.to_f-@inputLeftTime.to_f) > @delayBeforeMove
+        if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           @inputLeftTime = Time.now
         end
-        if (Time.now.to_f-@inputRightTime.to_f) > @delayBeforeMove
+        if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           @inputRightTime = Time.now
         end
-        if (Time.now.to_f-@inputUpTime.to_f) > @delayBeforeMove
+        if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           @inputUpTime = Time.now
         end
-        if (Time.now.to_f-@inputDownTime.to_f) > @delayBeforeMove
+        if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           @inputDownTime = Time.now
         end
-        case @direction
+        case @player.direction
         when 0
-          lookLeftDirection
+          @player.lookLeft
         when 1
-          lookRightDirection
+          @player.lookRight
         when 2
-          lookUpDirection
+          @player.lookUp
         when 3
-          lookDownDirection
+          @player.lookDown
         end
       end
     end
   end
 
-  def draw
-    Gosu.gl do
+  def updateGraphics
+    super
+    drawMap
+    @player.draw
+  end
 
-      GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT)
-      GL.Enable(GL::TEXTURE_2D)
-      GL.Enable(GL::DEPTH_TEST)
-      GL.MatrixMode(GL::PROJECTION)
-      GL.LoadIdentity
-      GLU.Perspective(@viewAngle, $gameWindow.width.to_f / $gameWindow.height.to_f, 1, 700)
-      GL.MatrixMode(GL::MODELVIEW)
-      GL.LoadIdentity
-      GLU.LookAt(@cameraX,@cameraY,200,@viewX,@viewY,0,0,0,1)
-
+  def drawMap
       #DRAW A PANEL
       GL.BindTexture(GL::TEXTURE_2D, @texture4.gl_tex_info.tex_name)
       GL.Enable(GL::ALPHA_TEST)
@@ -395,34 +273,6 @@ class Test3D < GameScene
       GL.Disable(GL::ALPHA_TEST)
       GL.PopMatrix
 
-      #DRAW A CHARACTER
-      GL.BindTexture(GL::TEXTURE_2D, @texture3.gl_tex_info.tex_name)
-      GL.Enable(GL::ALPHA_TEST)
-      GL.AlphaFunc(GL::GREATER,0)
-
-      GL.PushMatrix
-      GL.Translatef(@characterX,@characterY,0)
-      GL.Rotatef(-@viewAngle,1,0,0)
-        GL.Scalef(@texture3.width,@texture3.height,@texture3.height)
-
-        GL.Begin(GL::QUADS)
-          GL.TexCoord2d(@texture3.gl_tex_info.left,@texture3.gl_tex_info.bottom)
-          GL.Vertex3f(-0.5, 0.0, 0.0)
-
-          GL.TexCoord2d(@texture3.gl_tex_info.right,@texture3.gl_tex_info.bottom)
-          GL.Vertex3f(0.5, 0.0, 0.0)
-
-          GL.TexCoord2d(@texture3.gl_tex_info.right,@texture3.gl_tex_info.top)
-          GL.Vertex3f(0.5, 0.0, 1.0)
-
-          GL.TexCoord2d(@texture3.gl_tex_info.left,@texture3.gl_tex_info.top)
-          GL.Vertex3f(-0.5, 0.0, 1.0)
-        GL.End
-      GL.Disable(GL::ALPHA_TEST)
-      GL.PopMatrix
-
     end
-
-  end
 
 end
