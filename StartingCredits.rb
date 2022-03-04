@@ -42,7 +42,7 @@ class StartingCredits < GameScene
                 @gameFreakSprite = nil
                 #$gameWindow.currentGameScene = TitleScreen.new
                 #$gameWindow.currentGameScene = LoadingScreen.new
-                $gameWindow.currentGameScene = Test3D.new
+                $gameWindow.currentGameScene = MapTest.new
             end
             if !@gameFreakScreenVisible
                 @gameFreakSpriteAlpha += @gameFreakSpeed
