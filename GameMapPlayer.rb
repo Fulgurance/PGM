@@ -1,7 +1,7 @@
 class GameMapPlayer < GameMapMovableObject
 
-    def initialize(spriteName,x,y,z,direction=3)
-        super(spriteName,x,y,z,direction=3)
+    def initialize(spriteName,x,y,z,sizeX=32,sizeY=0,sizeZ=64,direction=3)
+        super(spriteName,x,y,z,sizeX,sizeY,sizeZ,direction=3)
         @spriteName = spriteName
         @sprite = Sprite.new("Graphics/Player/#{@spriteName}Down.png",retro: true)
         @direction = direction

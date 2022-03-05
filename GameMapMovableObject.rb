@@ -13,8 +13,8 @@ class GameMapMovableObject < GameMapObject
     attr_accessor :movingDown
     attr_accessor :delayBeforeMoving
 
-    def initialize(spriteName,x,y,z,direction=3)
-        super(x,y,z)
+    def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=32,direction=3)
+        super(x,y,z,sizeX,sizeY,sizeZ)
         @spriteName = spriteName
         @sprite = Sprite.new("Graphics/Player/#{@spriteName}Down.png",retro: true)
         @direction = direction
@@ -53,28 +53,28 @@ class GameMapMovableObject < GameMapObject
     def moveLeft
         @movingLeft = true
         @currentMovementDistance += @speed
-        @x -= @speed
+        @realX -= @speed
         playMovingLeft
     end
 
     def moveRight
         @movingRight = true
         @currentMovementDistance += @speed
-        @x += @speed
+        @realX += @speed
         playMovingRight
     end
 
     def moveUp
         @movingUp = true
         @currentMovementDistance += @speed
-        @y += @speed
+        @realY += @speed
         playMovingUp
     end
 
     def moveDown
         @movingDown = true
         @currentMovementDistance += @speed
-        @y -= @speed
+        @realY -= @speed
         playMovingDown
     end
 
@@ -132,7 +132,7 @@ class GameMapMovableObject < GameMapObject
         GL.AlphaFunc(GL::GREATER,0)
 
         GL.PushMatrix
-        GL.Translatef(self.x+@sprite.width/2,self.y,self.z)
+        GL.Translatef(@realX+$gameWindow.currentGameScene.squareSize/2-@sprite.width/4,@realY+$gameWindow.currentGameScene.squareSize/2,@realZ)
         GL.Rotatef(-$gameWindow.currentGameScene.viewAngle,1,0,0)
         GL.Scalef(@sprite.width,@sprite.height,@sprite.height)
 

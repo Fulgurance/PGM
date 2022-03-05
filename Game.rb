@@ -19,5 +19,5 @@ require './LoadingScreen'
 require './MapTest'
 
 $gameWindow = GameWindow.new("Pokemon",940,528)
-$gameWindow.currentGameScene = MapTest.new(7,16,0,6*32,6*32)#StartingCredits.new
+$gameWindow.currentGameScene = MapTest.new(0,0,0,6*32,6*32)#StartingCredits.new
 $gameWindow.show
