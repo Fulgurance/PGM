@@ -4,7 +4,7 @@ class GameWindow < Gosu::Window
 
     def initialize(title,width,height,options = {})
         super(width,height,options)
-        self.caption = title
+        @caption = title
     end
 
     def update

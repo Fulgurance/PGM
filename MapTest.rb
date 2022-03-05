@@ -1,19 +1,19 @@
 class MapTest < GameMapScene
 
-  def initialize
-    super
-
+  def initialize(playerX,playerY,playerZ,mapWidth,mapHeight)
+    super(playerX,playerY,playerZ,mapWidth,mapHeight)
     @texture = Sprite.new('Test.png', retro: true)
     @texture1 = Sprite.new('Test1.png', retro: true)
     @texture2 = Sprite.new('Tree.png', retro: true)
     @texture4 = Sprite.new('Panel.png', retro: true)
     @texture5 = Sprite.new('Test2.png', retro: true)
 
-    @backgroundMusic = Gosu::Song.new("Test.wav")
-    @backgroundMusic.play(true)
+    #@backgroundMusic = Gosu::Song.new("Test.wav")
+    #@backgroundMusic.play(true)
   end
 
   def drawMap
+=begin
       #DRAW A PANEL
       GL.BindTexture(GL::TEXTURE_2D, @texture4.gl_tex_info.tex_name)
       GL.Enable(GL::ALPHA_TEST)
@@ -122,42 +122,42 @@ class MapTest < GameMapScene
           GL.Vertex3f(-@texture5.width/2, @texture5.width, @texture5.height)
         GL.End
       GL.PopMatrix
-
+=end
       #DRAW THE GROUND
       GL.BindTexture(GL::TEXTURE_2D, @texture1.gl_tex_info.tex_name)
 
       GL.PushMatrix
-        GL.Scalef(1,1,0)#(@texture1.width, @texture1.height, 0)
+        GL.Scalef(1,1,1)
 
         GL.Begin(GL::QUADS)
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
-          GL.Vertex3f(-64, -64, 0.0)
+          GL.Vertex3f(0.0, 0.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
-          GL.Vertex3f(0, -64, 0.0)
+          GL.Vertex3f(64.0, 0.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
-          GL.Vertex3f(0, 0, 0.0)
+          GL.Vertex3f(64.0, 64.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
-          GL.Vertex3f(-64, 0, 0.0)
+          GL.Vertex3f(0.0, 64.0, 0.0)
 
 
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
-          GL.Vertex3f(0, -64, 0.0)
+          GL.Vertex3f(64.0, 0.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
-          GL.Vertex3f(64, -64, 0.0)
+          GL.Vertex3f(128.0, 0.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
-          GL.Vertex3f(64, 0, 0.0)
+          GL.Vertex3f(128.0, 64.0, 0.0)
 
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
-          GL.Vertex3f(0, 0, 0.0)
+          GL.Vertex3f(64.0, 64.0, 0.0)
 
         GL.End
       GL.PopMatrix
-
+=begin
       #DRAW A TREE
       GL.BindTexture(GL::TEXTURE_2D, @texture2.gl_tex_info.tex_name)
       GL.Enable(GL::ALPHA_TEST)
@@ -183,7 +183,7 @@ class MapTest < GameMapScene
 
       GL.Disable(GL::ALPHA_TEST)
       GL.PopMatrix
-
+=end
     end
 
 end

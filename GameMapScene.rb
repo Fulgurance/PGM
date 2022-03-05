@@ -1,22 +1,46 @@
 class GameMapScene < GameScene3D
 
+  attr_accessor :mapX
+  attr_accessor :mapY
+  attr_accessor :mapZ
+  attr_accessor :mapWidth
+  attr_accessor :mapHeight
   attr_accessor :viewAngle
   attr_accessor :squareSize
-  attr_accessor :cameraX,:cameraY,:cameraZ
-  attr_accessor :cameraReferenceX,:cameraReferenceY,:cameraReferenceZ
+  attr_accessor :cameraX
+  attr_accessor :cameraY
+  attr_accessor :cameraZ
+  attr_accessor :cameraReferenceX
+  attr_accessor :cameraReferenceY
+  attr_accessor :cameraReferenceZ
 
-  def initialize
-    super
+  def initialize(playerX,playerY,playerZ,mapWidth,mapHeight)
+    super()
+    @mapX = 0.0
+    @mapY = 0.0
+    @mapZ = 0.0
+    @mapWidth = mapWidth
+    @mapHeight = mapHeight
     @viewAngle = 45.0
-    @squareSize = 32
+    @squareSize = 32.0
     @aspectRatio = $gameWindow.width.to_f / $gameWindow.height.to_f
-    @near,@far = 1.0, 700.0
-    @cameraX,@cameraY,@cameraZ = 0.0,-320.0,200.0
-    @cameraReferenceX,@cameraReferenceY,@cameraReferenceZ = 0.0,-64.0,0.0
-    @upX,@upY,@upZ = 0.0,0.0,1.0
+    @near = 1.0
+    @far = 700.0
+    @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)#("Red",0,-64,0)
+    @cameraX = 0.0
+    @cameraY = -320.0
+    @cameraZ = 200.0
+    @cameraReferenceX = @player.x
+    @cameraReferenceY = @player.y
+    @cameraReferenceZ = @player.z
+    @upX = 0.0
+    @upY = 0.0
+    @upZ = 1.0
     @movementAnimationTime = Time.now
-    @inputLeftTime,@inputRightTime,@inputUpTime,@inputDownTime = Time.now
-    @player = GameMapPlayer.new("Red",0,-64,0)
+    @inputLeftTime = Time.now
+    @inputRightTime = Time.now
+    @inputUpTime = Time.now
+    @inputDownTime = Time.now
   end
 
   def drawGraphics
@@ -42,7 +66,7 @@ class GameMapScene < GameScene3D
 
   def updateInputs
     if @player.movingLeft || @player.movingRight || @player.movingUp || @player.movingDown
-      if @player.currentMovementDistance < self.squareSize &&
+      if @player.currentMovementDistance < @squareSize &&
           (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationSpeed
         @player.movingFrame += 1
         if @player.movingFrame > 3
@@ -51,43 +75,54 @@ class GameMapScene < GameScene3D
         @movementAnimationTime = Time.now
       end
     end
-    if @player.movingLeft && @player.currentMovementDistance < self.squareSize
+    if @player.movingLeft && @player.currentMovementDistance < @squareSize
       @player.moveLeft
-    elsif @player.movingRight && @player.currentMovementDistance < self.squareSize
+    elsif @player.movingRight && @player.currentMovementDistance < @squareSize
       @player.moveRight
-    elsif @player.movingUp && @player.currentMovementDistance < self.squareSize
+    elsif @player.movingUp && @player.currentMovementDistance < @squareSize
       @player.moveUp
-    elsif @player.movingDown && @player.currentMovementDistance < self.squareSize
+    elsif @player.movingDown && @player.currentMovementDistance < @squareSize
       @player.moveDown
     else
       @player.currentMovementDistance = 0
-      @player.movingLeft,@player.movingRight,@player.movingUp,@player.movingDown = false
+      @player.movingLeft = false
+      @player.movingRight = false
+      @player.movingUp = false
+      @player.movingDown = false
       if Gosu.button_down?(Gosu::KB_LEFT)
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
-            @player.moveLeft
+            if (@player.x-@squareSize) >= @mapX
+              @player.moveLeft
+            end
           end
         end
       elsif Gosu.button_down?(Gosu::KB_RIGHT)
         @player.direction = 1
         if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
-            @player.moveRight
+            if (@player.x+@squareSize) <= (@mapX+@mapWidth)
+              @player.moveRight
+            end
           end
         end
       elsif Gosu.button_down?(Gosu::KB_UP)
         @player.direction = 2
         if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
-            @player.moveUp
+            if (@player.y+@squareSize) <= (@mapY+@mapHeight)
+              @player.moveUp
+            end
           end
         end
       elsif Gosu.button_down?(Gosu::KB_DOWN)
         @player.direction = 3
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
-            @player.moveDown
+            if (@player.y-@squareSize) >= @mapY
+              @player.moveDown
+            end
           end
         end
       else
