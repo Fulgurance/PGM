@@ -130,6 +130,7 @@ class MapTest < GameMapScene
         GL.Scalef(1,1,1)
 
         GL.Begin(GL::QUADS)
+          #b1
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
           GL.Vertex3f(0.0, 0.0, 0.0)
 
@@ -142,7 +143,7 @@ class MapTest < GameMapScene
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
           GL.Vertex3f(0.0, 64.0, 0.0)
 
-
+          #b2
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
           GL.Vertex3f(64.0, 0.0, 0.0)
 
@@ -154,6 +155,97 @@ class MapTest < GameMapScene
 
           GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
           GL.Vertex3f(64.0, 64.0, 0.0)
+
+          #b3
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(128.0, 0.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(192.0, 0.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(192.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(128.0, 64.0, 0.0)
+
+          #m1
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(0.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(64.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(64.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(0.0, 128.0, 0.0)
+
+          #m2
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(64.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(128.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(128.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(64.0, 128.0, 0.0)
+
+          #m3
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(128.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(192.0, 64.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(192.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(128.0, 128.0, 0.0)
+
+          #h1
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(0.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(64.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(64.0, 192.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(0.0, 192.0, 0.0)
+
+          #h2
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(64.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(128.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(128.0, 192.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(64.0, 192.0, 0.0)
+
+          #h3
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(128.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(192.0, 128.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(192.0, 192.0, 0.0)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(128.0, 192.0, 0.0)
 
         GL.End
       GL.PopMatrix
