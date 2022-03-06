@@ -34,16 +34,114 @@ class Panel < GameMapObject
 
 end
 
+class Building < GameMapObject
+
+  def initialize(x,y,z)
+      super(x,y,z)
+      @sizeX = 128
+      @sizeY = 128
+      @sizeZ = 96
+      @passable = false
+      @texture1 = Sprite.new('Test.png', retro: true)
+      @texture2 = Sprite.new('Test2.png', retro: true)
+  end
+
+  def draw
+    #(Front)
+      GL.BindTexture(GL::TEXTURE_2D, @texture1.gl_tex_info.tex_name)
+
+      GL.PushMatrix
+        GL.Scalef(1, 1, 1)
+
+        GL.Begin(GL::QUADS)
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x, @y, @z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x+@sizeX, @y, @z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x+@sizeX, @y, @z+@sizeZ)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x, @y, @z+@sizeZ)
+        GL.End
+      GL.PopMatrix
+
+      #(Left)
+      GL.BindTexture(GL::TEXTURE_2D, @texture1.gl_tex_info.tex_name)
+
+      GL.PushMatrix
+        GL.Scalef(1, 1, 1)
+
+        GL.Begin(GL::QUADS)
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x, @y+@sizeY, @z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x, @y, @z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x, @y, @z+@sizeZ)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x,@y+@sizeY,@z+@sizeZ)
+        GL.End
+      GL.PopMatrix
+
+      #(Right)
+      GL.BindTexture(GL::TEXTURE_2D, @texture1.gl_tex_info.tex_name)
+
+      GL.PushMatrix
+        GL.Scalef(1, 1, 1)
+
+        GL.Begin(GL::QUADS)
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x+@sizeX,@y,@z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.bottom)
+          GL.Vertex3f(@x+@sizeX,@y+@sizeY,@z)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.right,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x+@sizeX,@y+@sizeY,@z+@sizeZ)
+
+          GL.TexCoord2d(@texture1.gl_tex_info.left,@texture1.gl_tex_info.top)
+          GL.Vertex3f(@x+@sizeX,@y,@z+@sizeZ)
+        GL.End
+      GL.PopMatrix
+      #(Up)
+      GL.BindTexture(GL::TEXTURE_2D, @texture2.gl_tex_info.tex_name)
+
+      GL.PushMatrix
+        GL.Scalef(1, 1, 1)
+
+        GL.Begin(GL::QUADS)
+          GL.TexCoord2d(@texture2.gl_tex_info.left,@texture2.gl_tex_info.bottom)
+          GL.Vertex3f(@x,@y,@z+@sizeZ)
+
+          GL.TexCoord2d(@texture2.gl_tex_info.right,@texture2.gl_tex_info.bottom)
+          GL.Vertex3f(@x+@sizeX,@y,@z+@sizeZ)
+
+          GL.TexCoord2d(@texture2.gl_tex_info.right,@texture2.gl_tex_info.top)
+          GL.Vertex3f(@x+@sizeX,@y+@sizeY,@z+@sizeZ)
+
+          GL.TexCoord2d(@texture2.gl_tex_info.left,@texture2.gl_tex_info.top)
+          GL.Vertex3f(@x, @y+@sizeY, @z+@sizeZ)
+        GL.End
+      GL.PopMatrix
+
+  end
+
+end
+
 class MapTest < GameMapScene
 
   def initialize(playerX,playerY,playerZ,mapWidth,mapHeight)
     super(playerX,playerY,playerZ,mapWidth,mapHeight)
-    @texture = Sprite.new('Test.png', retro: true)
     @texture1 = Sprite.new('Test1.png', retro: true)
     @texture2 = Sprite.new('Tree.png', retro: true)
-    @texture5 = Sprite.new('Test2.png', retro: true)
 
-    @objects = [Panel.new(32,32,0)]
+    @objects = [Building.new(64,64,0),Panel.new(32,32,0)]
 
     #@backgroundMusic = Gosu::Song.new("Test.wav")
     #@backgroundMusic.play(true)

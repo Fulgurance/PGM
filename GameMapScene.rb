@@ -45,11 +45,6 @@ class GameMapScene < GameScene3D
     @inputDownTime = Time.now
     @playBumpSound = false
     @bumpSound = Gosu::Sample.new("Audios/SE/Bump.wav")
-
-    @leftPassable = false
-    @rightPassable = false
-    @upPassable = false
-    @downPassable = false
   end
 
   def drawGraphics
@@ -77,24 +72,35 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
+=begin
     @leftPassable = false
     @rightPassable = false
     @upPassable = false
     @downPassable = false
     @objects.each do |object|
-      if (@player.x-32) >= object.x+object.sizeX || @player.y != object.y
-        @leftPassable = true
-      end
-      if (@player.x+32) < object.x || @player.y != object.y
-        @rightPassable = true
-      end
-      if (@player.y+32) < object.y || @player.x != object.x
-        @upPassable = true
-      end
-      if (@player.y-32) >= object.y+object.sizeY || @player.x != object.x
-        @downPassable = true
-      end
+      #if object.passable
+        #@leftPassable = true
+        #@rightPassable = true
+        #@upPassable = true
+        #@downPassable = true
+      #else
+        if (@player.x-32) >= object.x+object.sizeX || @player.y != object.y
+          @leftPassable = true
+        end
+        if (@player.x+32) < object.x || @player.y != object.y
+          @rightPassable = true
+        end
+        if (@player.y+32) < object.y || @player.x != object.x
+          @upPassable = true
+        end
+        if (@player.y-32) >= object.y+object.sizeY || @player.x != object.x
+          @downPassable = true
+        end
+        puts "Next X comparison : "+((@player.x-32) >= object.x+object.sizeX).to_s
+        puts "Py = Oy : "+(@player.y != object.y).to_s
+      #end
     end
+=end
     if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationSpeed
       @player.movingFrame += 1
       if @player.movingFrame == 2
@@ -126,7 +132,7 @@ class GameMapScene < GameScene3D
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
-            if (@player.x-@squareSize) >= @mapX && @leftPassable
+            if (@player.x-@squareSize) >= @mapX && directionPassable?(0)
               @player.moveLeft
               @player.x -= @squareSize
             else
@@ -141,7 +147,7 @@ class GameMapScene < GameScene3D
         @player.direction = 1
         if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
-            if (@player.x+@squareSize) <= (@mapX+@mapWidth) && @rightPassable
+            if (@player.x+@squareSize) < (@mapX+@mapWidth) && directionPassable?(1)
               @player.moveRight
               @player.x += @squareSize
             else
@@ -156,7 +162,7 @@ class GameMapScene < GameScene3D
         @player.direction = 2
         if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
-            if (@player.y+@squareSize) <= (@mapY+@mapHeight) && @upPassable
+            if (@player.y+@squareSize) < (@mapY+@mapHeight) && directionPassable?(2)
               @player.moveUp
               @player.y += @squareSize
             else
@@ -171,7 +177,7 @@ class GameMapScene < GameScene3D
         @player.direction = 3
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
-            if (@player.y-@squareSize) >= @mapY && @downPassable
+            if (@player.y-@squareSize) >= @mapY && directionPassable?(3)
               @player.moveDown
               @player.y -= @squareSize
             else
@@ -207,6 +213,31 @@ class GameMapScene < GameScene3D
         end
       end
     end
+  end
+
+  def directionPassable?(direction)
+    result = true
+    @objects.each do |object|
+      case direction
+      when 0
+        if (@player.x-32) < object.x+object.sizeX && (@player.x-32) >= object.x && (@player.y) >= object.y && (@player.y) <= object.y+object.sizeY
+          result = false
+        end
+      when 1
+        if (@player.x+32) >= object.x && (@player.x+32) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY
+          result = false
+        end
+      when 2
+        if (@player.y+32) >= object.y && (@player.y+32) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX
+          result = false
+        end
+      when 3
+        if (@player.y-32) < object.y+object.sizeY && (@player.y-32) >= object.y  && (@player.x) >= object.x && (@player.x) <= object.x+object.sizeX
+          result = false
+        end
+      end
+    end
+    return result
   end
 
 end
