@@ -21,7 +21,7 @@ class GameMapScene < GameScene3D
     @mapZ = 0.0
     @mapWidth = mapWidth
     @mapHeight = mapHeight
-    @viewAngle = 45.0
+    @viewAngle = 35.0#45.0
     @squareSize = 32.0
     @aspectRatio = $gameWindow.width.to_f / $gameWindow.height.to_f
     @near = 1.0
@@ -31,7 +31,7 @@ class GameMapScene < GameScene3D
     @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
     @cameraX = 0.0 + @player.realX - @player.sprite.width/2
     @cameraY = -320.0
-    @cameraZ = 200.0
+    @cameraZ = 250.0#200.0
     @cameraReferenceX = @player.realX - @player.sprite.width/2
     @cameraReferenceY = @player.realY
     @cameraReferenceZ = @player.realZ
