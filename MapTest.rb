@@ -41,7 +41,7 @@ class Building < GameMapObject
       @sizeX = 128
       @sizeY = 128
       @sizeZ = 96
-      @passable = false
+      @passable = true
       @texture1 = Sprite.new('Test.png', retro: true)
       @texture2 = Sprite.new('Test2.png', retro: true)
   end
