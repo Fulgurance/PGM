@@ -136,20 +136,24 @@ end
 
 class MapTest < GameMapScene
 
-  def initialize(playerX,playerY,playerZ,mapWidth,mapHeight)
-    super(playerX,playerY,playerZ,mapWidth,mapHeight)
-    @texture1 = Sprite.new('Test1.png', retro: true)
+  def initialize(playerX,playerY,playerZ)
+    super(playerX,playerY,playerZ,9*32,9*32)
     @texture2 = Sprite.new('Tree.png', retro: true)
 
     @objects = [GameMapGround.new("1",true,0,0,0,64,64),
                 GameMapGround.new("1",true,64,0,0,64,64),
                 GameMapGround.new("1",true,128,0,0,64,64),
+                GameMapGround.new("2",true,192,0,0,96,96),
                 GameMapGround.new("1",true,0,64,0,64,64),
                 GameMapGround.new("1",true,64,64,0,64,64),
                 GameMapGround.new("1",true,128,64,0,64,64),
                 GameMapGround.new("1",true,0,128,0,64,64),
                 GameMapGround.new("1",true,64,128,0,64,64),
                 GameMapGround.new("1",true,128,128,0,64,64),
+                GameMapGround.new("2",true,0,192,0,96,96),
+                GameMapGround.new("2",true,96,192,0,96,96),
+                GameMapGround.new("2",true,192,192,0,96,96),
+                GameMapGround.new("2",true,192,96,0,96,96),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
 

@@ -14,7 +14,7 @@ class GameMapScene < GameScene3D
   attr_accessor :cameraReferenceY
   attr_accessor :cameraReferenceZ
 
-  def initialize(playerX,playerY,playerZ,mapWidth,mapHeight)
+  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32)
     super()
     @mapX = 0.0
     @mapY = 0.0
@@ -191,7 +191,7 @@ class GameMapScene < GameScene3D
     @objects.each do |object|
       case direction
       when 0
-        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) <= object.y+object.sizeY && !object.passable
+        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && !object.passable
           result = false
         end
       when 1
@@ -203,7 +203,7 @@ class GameMapScene < GameScene3D
           result = false
         end
       when 3
-        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) <= object.x+object.sizeX && !object.passable
+        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && !object.passable
           result = false
         end
       end
