@@ -13,8 +13,9 @@ class GameMapScene < GameScene3D
   attr_accessor :cameraReferenceX
   attr_accessor :cameraReferenceY
   attr_accessor :cameraReferenceZ
+  attr_accessor :backgroundMusic
 
-  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32)
+  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic)
     super()
     @mapX = 0.0
     @mapY = 0.0
@@ -45,8 +46,16 @@ class GameMapScene < GameScene3D
     @inputRightTime = Time.now
     @inputUpTime = Time.now
     @inputDownTime = Time.now
+    @inputBicycleTime = Time.now
+    @delayBeforeNextInput = 0.20
     @playBumpSound = false
     @bumpSound = Gosu::Sample.new("Audios/SE/Bump.wav")
+    @bicycleSound = Gosu::Sample.new("Audios/SE/Bicycle.wav")
+    @bicycleMusic = Gosu::Song.new("Audios/BGM/Bicycle.wav")
+    if backgroundMusic != nil
+      @backgroundMusic = Gosu::Song.new(backgroundMusic)
+      @backgroundMusic.play(true)
+    end
   end
 
   def drawGraphics
@@ -86,8 +95,39 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
-    if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+    if Gosu.button_down?(Gosu::KB_RIGHT_CONTROL) && (Time.now.to_f-@inputBicycleTime.to_f) > @delayBeforeNextInput
+      if !@player.onBicycle
+        if backgroundMusic != nil
+          @backgroundMusic.stop
+        end
+        @bicycleSound.play
+        @player.onBicycle = true
+        @bicycleMusic.play(true)
+      else
+        @player.onBicycle = false
+        @bicycleMusic.stop
+        if backgroundMusic != nil
+          @backgroundMusic.play(true)
+        end
+      end
+      @inputBicycleTime = Time.now
+    end
+    if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
       if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationRunningSpeed
+        @player.movingFrame += 1
+        if @player.movingFrame == 2
+          @playBumpSound = true
+        end
+        if @player.movingFrame > 3
+          @player.movingFrame = 0
+          @playBumpSound = true
+        end
+        @movementAnimationTime = Time.now
+      else
+        @playBumpSound = false
+      end
+    elsif @player.onBicycle
+      if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationCyclingSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
@@ -116,26 +156,34 @@ class GameMapScene < GameScene3D
       end
     end
     if @player.movingLeft && @player.currentMovementDistance < @squareSize
-      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
         @player.runLeft
+      elsif @player.onBicycle
+        @player.cyclingLeft
       else
         @player.moveLeft
       end
     elsif @player.movingRight && @player.currentMovementDistance < @squareSize
-      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
         @player.runRight
+      elsif @player.onBicycle
+        @player.cyclingRight
       else
         @player.moveRight
       end
     elsif @player.movingUp && @player.currentMovementDistance < @squareSize
-      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
         @player.runUp
+      elsif @player.onBicycle
+        @player.cyclingUp
       else
         @player.moveUp
       end
     elsif @player.movingDown && @player.currentMovementDistance < @squareSize
-      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
         @player.runDown
+      elsif @player.onBicycle
+        @player.cyclingDown
       else
         @player.moveDown
       end
@@ -145,20 +193,25 @@ class GameMapScene < GameScene3D
       @player.movingRight = false
       @player.movingUp = false
       @player.movingDown = false
+
       if Gosu.button_down?(Gosu::KB_LEFT)
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
             if (@player.x-@squareSize) >= @mapX && nextSquare(0).rightPassable && currentSquare.leftPassable
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runLeft
+              elsif @player.onBicycle
+                 @player.cyclingLeft
               else
                 @player.moveLeft
               end
               @player.x -= @squareSize
             else
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningLeft
+              elsif @player.onBicycle
+                @player.playCyclingLeft
               else
                 @player.playMovingLeft
               end
@@ -173,15 +226,19 @@ class GameMapScene < GameScene3D
         if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
             if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare(1).leftPassable && currentSquare.rightPassable
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runRight
+              elsif @player.onBicycle
+                @player.cyclingRight
               else
                 @player.moveRight
               end
               @player.x += @squareSize
             else
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningRight
+              elsif @player.onBicycle
+                @player.playCyclingRight
               else
                 @player.playMovingRight
               end
@@ -196,15 +253,19 @@ class GameMapScene < GameScene3D
         if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
             if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare(2).downPassable && currentSquare.upPassable
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runUp
+              elsif @player.onBicycle
+                @player.cyclingUp
               else
                 @player.moveUp
               end
               @player.y += @squareSize
             else
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningUp
+              elsif @player.onBicycle
+                @player.playCyclingUp
               else
                 @player.playMovingUp
               end
@@ -219,15 +280,19 @@ class GameMapScene < GameScene3D
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
             if (@player.y-@squareSize) >= @mapY && nextSquare(3).upPassable && currentSquare.downPassable
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runDown
+              elsif @player.onBicycle
+                @player.cyclingDown
               else
                 @player.moveDown
               end
               @player.y -= @squareSize
             else
-              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+              if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningDown
+              elsif @player.onBicycle
+                @player.playCyclingDown
               else
                 @player.playMovingDown
               end
@@ -252,13 +317,29 @@ class GameMapScene < GameScene3D
         end
         case @player.direction
         when 0
-          @player.lookLeft
+          if @player.onBicycle
+            @player.lookOnBicycleLeft
+          else
+            @player.lookLeft
+          end
         when 1
-          @player.lookRight
+          if @player.onBicycle
+            @player.lookOnBicycleRight
+          else
+            @player.lookRight
+          end
         when 2
-          @player.lookUp
+          if @player.onBicycle
+            @player.lookOnBicycleUp
+          else
+            @player.lookUp
+          end
         when 3
-          @player.lookDown
+          if @player.onBicycle
+            @player.lookOnBicycleDown
+          else
+            @player.lookDown
+          end
         end
       end
     end

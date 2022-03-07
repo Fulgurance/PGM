@@ -185,7 +185,7 @@ end
 class MapTest < GameMapScene
 
   def initialize(playerX,playerY,playerZ)
-    super(playerX,playerY,playerZ,9*32,9*32)
+    super(playerX,playerY,playerZ,9*32,9*32,"Test.wav")
     @texture2 = Sprite.new('Tree.png', retro: true)
 
     @objects = [Road.new(0,0,0),
@@ -200,9 +200,6 @@ class MapTest < GameMapScene
                 Water.new(192,96,0),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
-
-    #@backgroundMusic = Gosu::Song.new("Test.wav")
-    #@backgroundMusic.play(true)
   end
 
 end
