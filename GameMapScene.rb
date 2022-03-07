@@ -73,6 +73,12 @@ class GameMapScene < GameScene3D
 
   def updateInputs
     @player.realZ = currentSquareZ
+    @cameraX = @player.realX+@squareSize/2
+    @cameraY = -320.0 + @player.realY+@squareSize
+    @cameraZ = 260.0 + @player.realZ
+    @cameraReferenceX = @player.realX+@squareSize/2
+    @cameraReferenceY = @player.realY+@squareSize
+    @cameraReferenceZ = @player.realZ
     if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
       if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationRunningSpeed
         @player.movingFrame += 1
@@ -256,19 +262,19 @@ class GameMapScene < GameScene3D
     @objects.each do |object|
       case direction
       when 0
-        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && !object.passable
+        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
           result = false
         end
       when 1
-        if (@player.x+@squareSize) >= object.x && (@player.x+@squareSize) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && !object.passable
+        if (@player.x+@squareSize) >= object.x && (@player.x+@squareSize) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
           result = false
         end
       when 2
-        if (@player.y+@squareSize) >= object.y && (@player.y+@squareSize) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && !object.passable
+        if (@player.y+@squareSize) >= object.y && (@player.y+@squareSize) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
           result = false
         end
       when 3
-        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && !object.passable
+        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
           result = false
         end
       end

@@ -21,37 +21,11 @@ class GameMapPlayer < GameMapMovableObject
         @delayBeforeMoving = 0.3
     end
 
-    def moveLeft
-        super
-        $gameWindow.currentGameScene.cameraX -= @speed
-        $gameWindow.currentGameScene.cameraReferenceX -= @speed
-    end
-
-    def moveRight
-        super
-        $gameWindow.currentGameScene.cameraX += @speed
-        $gameWindow.currentGameScene.cameraReferenceX += @speed
-    end
-
-    def moveUp
-        super
-        $gameWindow.currentGameScene.cameraY += @speed
-        $gameWindow.currentGameScene.cameraReferenceY += @speed
-    end
-
-    def moveDown
-        super
-        $gameWindow.currentGameScene.cameraY -= @speed
-        $gameWindow.currentGameScene.cameraReferenceY -= @speed
-    end
-
     def runLeft
         @movingLeft = true
         @currentMovementDistance += @runningSpeed
         @realX -= @runningSpeed
         playRunningLeft
-        $gameWindow.currentGameScene.cameraX -= @runningSpeed
-        $gameWindow.currentGameScene.cameraReferenceX -= @runningSpeed
     end
 
     def runRight
@@ -59,8 +33,6 @@ class GameMapPlayer < GameMapMovableObject
         @currentMovementDistance += @runningSpeed
         @realX += @runningSpeed
         playRunningRight
-        $gameWindow.currentGameScene.cameraX += @runningSpeed
-        $gameWindow.currentGameScene.cameraReferenceX += @runningSpeed
     end
 
     def runUp
@@ -68,8 +40,6 @@ class GameMapPlayer < GameMapMovableObject
         @currentMovementDistance += @runningSpeed
         @realY += @runningSpeed
         playRunningUp
-        $gameWindow.currentGameScene.cameraY += @runningSpeed
-        $gameWindow.currentGameScene.cameraReferenceY += @runningSpeed
     end
 
     def runDown
@@ -77,8 +47,6 @@ class GameMapPlayer < GameMapMovableObject
         @currentMovementDistance += @runningSpeed
         @realY -= @runningSpeed
         playRunningDown
-        $gameWindow.currentGameScene.cameraY -= @runningSpeed
-        $gameWindow.currentGameScene.cameraReferenceY -= @runningSpeed
     end
 
     def playRunningLeft
