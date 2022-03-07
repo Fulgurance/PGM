@@ -29,9 +29,11 @@ class GameMapScene < GameScene3D
     @objects = []
     @events = []
     @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
+    @angleY = -320.0
+    @angleZ = 250.0
     @cameraX = @player.realX+@squareSize/2
-    @cameraY = -320.0
-    @cameraZ = 260.0
+    @cameraY = @angleY + @player.realY+@squareSize
+    @cameraZ = @angleZ + @player.realZ
     @cameraReferenceX = @player.realX+@squareSize/2
     @cameraReferenceY = @player.realY+@squareSize
     @cameraReferenceZ = @player.realZ
@@ -74,8 +76,8 @@ class GameMapScene < GameScene3D
   def updateInputs
     @player.realZ = currentSquareZ
     @cameraX = @player.realX+@squareSize/2
-    @cameraY = -320.0 + @player.realY+@squareSize
-    @cameraZ = 260.0 + @player.realZ
+    @cameraY = @angleY + @player.realY+@squareSize
+    @cameraZ = @angleZ + @player.realZ
     @cameraReferenceX = @player.realX+@squareSize/2
     @cameraReferenceY = @player.realY+@squareSize
     @cameraReferenceZ = @player.realZ
