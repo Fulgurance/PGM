@@ -31,7 +31,7 @@ class GameMapScene < GameScene3D
     @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
     @cameraX = @player.realX+@squareSize/2
     @cameraY = -320.0
-    @cameraZ = 250.0
+    @cameraZ = 260.0
     @cameraReferenceX = @player.realX+@squareSize/2
     @cameraReferenceY = @player.realY+@squareSize
     @cameraReferenceZ = @player.realZ

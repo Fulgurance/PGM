@@ -153,7 +153,7 @@ class MapTest < GameMapScene
                 GameMapGround.new("2",true,0,192,0,96,96),
                 GameMapGround.new("2",true,96,192,0,96,96),
                 GameMapGround.new("2",true,192,192,0,96,96),
-                GameMapGround.new("2",true,192,96,0,96,96),
+                GameMapGround.new("3",true,192,96,0,96,96),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
 
