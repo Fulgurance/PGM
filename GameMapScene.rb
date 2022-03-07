@@ -70,17 +70,22 @@ class GameMapScene < GameScene3D
   end
 
   def update
+    square = currentSquare
+    @player.realZ = square.z+square.sizeZ
+    updateCamera
     updateInputs
   end
 
-  def updateInputs
-    @player.realZ = currentSquareZ
+  def updateCamera
     @cameraX = @player.realX+@squareSize/2
     @cameraY = @angleY + @player.realY+@squareSize
     @cameraZ = @angleZ + @player.realZ
     @cameraReferenceX = @player.realX+@squareSize/2
     @cameraReferenceY = @player.realY+@squareSize
     @cameraReferenceZ = @player.realZ
+  end
+
+  def updateInputs
     if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
       if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationRunningSpeed
         @player.movingFrame += 1
@@ -144,7 +149,7 @@ class GameMapScene < GameScene3D
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
-            if (@player.x-@squareSize) >= @mapX && directionPassable?(0)
+            if (@player.x-@squareSize) >= @mapX && nextSquare(0).rightPassable && currentSquare.leftPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
                 @player.runLeft
               else
@@ -167,7 +172,7 @@ class GameMapScene < GameScene3D
         @player.direction = 1
         if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
-            if (@player.x+@squareSize) < (@mapX+@mapWidth) && directionPassable?(1)
+            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare(1).leftPassable && currentSquare.rightPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
                 @player.runRight
               else
@@ -190,7 +195,7 @@ class GameMapScene < GameScene3D
         @player.direction = 2
         if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
-            if (@player.y+@squareSize) < (@mapY+@mapHeight) && directionPassable?(2)
+            if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare(2).downPassable && currentSquare.upPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
                 @player.runUp
               else
@@ -213,7 +218,7 @@ class GameMapScene < GameScene3D
         @player.direction = 3
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
-            if (@player.y-@squareSize) >= @mapY && directionPassable?(3)
+            if (@player.y-@squareSize) >= @mapY && nextSquare(3).upPassable && currentSquare.downPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
                 @player.runDown
               else
@@ -259,60 +264,35 @@ class GameMapScene < GameScene3D
     end
   end
 
-  def directionPassable?(direction)
-    result = true
-    @objects.each do |object|
-      case direction
-      when 0
-        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
-          result = false
-        end
-      when 1
-        if (@player.x+@squareSize) >= object.x && (@player.x+@squareSize) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
-          result = false
-        end
-      when 2
-        if (@player.y+@squareSize) >= object.y && (@player.y+@squareSize) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
-          result = false
-        end
-      when 3
-        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && (@player.z) >= object.z && (@player.z) < object.z+object.sizeZ && !object.passable
-          result = false
-        end
-      end
-    end
-    return result
-  end
-
-  def currentSquareZ
+  def currentSquare
     result = 0
     @objects.each do |object|
-      if (@player.x) < object.x+object.sizeX && (@player.x) >= object.x && (@player.y) < object.y+object.sizeY && (@player.y) >= object.y
-        result = object.realZ + object.sizeZ
+      if @player.x < object.x+object.sizeX && @player.x >= object.x && @player.y < object.y+object.sizeY && @player.y >= object.y
+        result = object
       end
     end
     return result
   end
 
-  def nextSquareZ(direction)
+  def nextSquare(direction)
     result = 0
     @objects.each do |object|
       case direction
       when 0
         if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY
-          result = object.realZ + object.sizeZ
+          result = object
         end
       when 1
         if (@player.x+@squareSize) >= object.x && (@player.x+@squareSize) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY
-          result = object.realZ + object.sizeZ
+          result = object
         end
       when 2
         if (@player.y+@squareSize) >= object.y && (@player.y+@squareSize) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX
-          result = object.realZ + object.sizeZ
+          result = object
         end
       when 3
         if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX
-          result = object.realZ + object.sizeZ
+          result = object
         end
       end
     end

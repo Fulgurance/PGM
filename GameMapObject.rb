@@ -10,7 +10,10 @@ class GameMapObject
     attr_accessor :sizeY
     attr_accessor :sizeZ
     attr_accessor :height
-    attr_accessor :passable
+    attr_accessor :leftPassable
+    attr_accessor :rightPassable
+    attr_accessor :upPassable
+    attr_accessor :downPassable
 
     def initialize(x,y,z,sizeX=32,sizeY=32,sizeZ=32)
         @x = x
@@ -22,7 +25,10 @@ class GameMapObject
         @sizeX = sizeX
         @sizeY = sizeY
         @sizeZ = sizeZ
-        @passable = passable
+        @leftPassable = false
+        @rightPassable = false
+        @upPassable = false
+        @downPassable = false
     end
 
     def draw

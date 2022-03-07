@@ -5,11 +5,10 @@ class GameMapGround < GameMapObject
     attr_accessor :animated
     attr_accessor :animationSpeed
 
-    def initialize(spriteName,passable,x,y,z,sizeX=32,sizeY=32,sizeZ=0)
+    def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=0)
         super(x,y,z,sizeX,sizeY,sizeZ)
         @spriteName = spriteName
         @sprite = Sprite.new("Graphics/Grounds/#{@spriteName}.png",retro: true)
-        @passable = passable
         @animated = false
         @animationSpeed = 0.20
     end

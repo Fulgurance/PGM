@@ -1,8 +1,53 @@
+class Road < GameMapGround
+
+  def initialize(x,y,z)
+    super("1",x,y,z)
+    self.sizeX = 64
+    self.sizeY = 64
+    self.leftPassable = true
+    self.rightPassable = true
+    self.upPassable = true
+    self.downPassable = true
+  end
+
+end
+
+class Grass < GameMapGround
+
+  def initialize(x,y,z)
+    super("2",x,y,z)
+    self.sizeX = 96
+    self.sizeY = 96
+    self.leftPassable = true
+    self.rightPassable = true
+    self.upPassable = true
+    self.downPassable = true
+  end
+
+end
+
+class Water < GameMapGround
+
+  def initialize(x,y,z)
+    super("3",x,y,z)
+    self.sizeX = 96
+    self.sizeY = 96
+    self.leftPassable = false
+    self.rightPassable = false
+    self.upPassable = false
+    self.downPassable = false
+  end
+
+end
+
 class Panel < GameMapObject
 
   def initialize(x,y,z)
       super(x,y,z)
-      @passable = false
+      self.leftPassable = false
+      self.rightPassable = false
+      self.upPassable = false
+      self.downPassable = false
       @texture = Sprite.new('Panel.png', retro: true)
   end
 
@@ -38,10 +83,13 @@ class Building < GameMapObject
 
   def initialize(x,y,z)
       super(x,y,z)
-      @sizeX = 128
-      @sizeY = 128
-      @sizeZ = 96
-      @passable = true
+      self.sizeX = 128
+      self.sizeY = 128
+      self.sizeZ = 96
+      self.leftPassable = true
+      self.rightPassable = true
+      self.upPassable = true
+      self.downPassable = true
       @texture1 = Sprite.new('Test.png', retro: true)
       @texture2 = Sprite.new('Test2.png', retro: true)
   end
@@ -140,20 +188,16 @@ class MapTest < GameMapScene
     super(playerX,playerY,playerZ,9*32,9*32)
     @texture2 = Sprite.new('Tree.png', retro: true)
 
-    @objects = [GameMapGround.new("1",true,0,0,0,64,64),
-                GameMapGround.new("1",true,64,0,0,64,64),
-                GameMapGround.new("1",true,128,0,0,64,64),
-                GameMapGround.new("2",true,192,0,0,96,96),
-                GameMapGround.new("1",true,0,64,0,64,64),
-                GameMapGround.new("1",true,64,64,0,64,64),
-                GameMapGround.new("1",true,128,64,0,64,64),
-                GameMapGround.new("1",true,0,128,0,64,64),
-                GameMapGround.new("1",true,64,128,0,64,64),
-                GameMapGround.new("1",true,128,128,0,64,64),
-                GameMapGround.new("2",true,0,192,0,96,96),
-                GameMapGround.new("2",true,96,192,0,96,96),
-                GameMapGround.new("2",true,192,192,0,96,96),
-                GameMapGround.new("3",true,192,96,0,96,96),
+    @objects = [Road.new(0,0,0),
+                Road.new(64,0,0),
+                Road.new(128,0,0),
+                Grass.new(192,0,0),
+                Road.new(0,64,0),
+                Road.new(0,128,0),
+                Grass.new(0,192,0),
+                Grass.new(96,192,0),
+                Grass.new(192,192,0),
+                Water.new(192,96,0),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
 
