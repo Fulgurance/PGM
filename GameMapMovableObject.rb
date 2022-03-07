@@ -132,7 +132,7 @@ class GameMapMovableObject < GameMapObject
         GL.AlphaFunc(GL::GREATER,0)
 
         GL.PushMatrix
-        GL.Translatef(@realX+$gameWindow.currentGameScene.squareSize/2-@sprite.width/4,@realY+$gameWindow.currentGameScene.squareSize/2,@realZ)
+        GL.Translatef(@realX+$gameWindow.currentGameScene.squareSize/2,@realY+$gameWindow.currentGameScene.squareSize/2,@realZ)
         GL.Rotatef(-$gameWindow.currentGameScene.viewAngle,1,0,0)
         GL.Scalef(@sprite.width,@sprite.height,@sprite.height)
 

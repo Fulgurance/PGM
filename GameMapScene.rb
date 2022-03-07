@@ -21,7 +21,7 @@ class GameMapScene < GameScene3D
     @mapZ = 0.0
     @mapWidth = mapWidth
     @mapHeight = mapHeight
-    @viewAngle = 35.0#45.0
+    @viewAngle = 35.0
     @squareSize = 32.0
     @aspectRatio = $gameWindow.width.to_f / $gameWindow.height.to_f
     @near = 1.0
@@ -31,7 +31,7 @@ class GameMapScene < GameScene3D
     @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
     @cameraX = 0.0 + @player.realX - @player.sprite.width/2
     @cameraY = -320.0
-    @cameraZ = 250.0#200.0
+    @cameraZ = 250.0
     @cameraReferenceX = @player.realX - @player.sprite.width/2
     @cameraReferenceY = @player.realY
     @cameraReferenceZ = @player.realZ
@@ -72,35 +72,6 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
-=begin
-    @leftPassable = false
-    @rightPassable = false
-    @upPassable = false
-    @downPassable = false
-    @objects.each do |object|
-      #if object.passable
-        #@leftPassable = true
-        #@rightPassable = true
-        #@upPassable = true
-        #@downPassable = true
-      #else
-        if (@player.x-32) >= object.x+object.sizeX || @player.y != object.y
-          @leftPassable = true
-        end
-        if (@player.x+32) < object.x || @player.y != object.y
-          @rightPassable = true
-        end
-        if (@player.y+32) < object.y || @player.x != object.x
-          @upPassable = true
-        end
-        if (@player.y-32) >= object.y+object.sizeY || @player.x != object.x
-          @downPassable = true
-        end
-        puts "Next X comparison : "+((@player.x-32) >= object.x+object.sizeX).to_s
-        puts "Py = Oy : "+(@player.y != object.y).to_s
-      #end
-    end
-=end
     if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationSpeed
       @player.movingFrame += 1
       if @player.movingFrame == 2
@@ -220,19 +191,19 @@ class GameMapScene < GameScene3D
     @objects.each do |object|
       case direction
       when 0
-        if (@player.x-32) < object.x+object.sizeX && (@player.x-32) >= object.x && (@player.y) >= object.y && (@player.y) <= object.y+object.sizeY
+        if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) <= object.y+object.sizeY && !object.passable
           result = false
         end
       when 1
-        if (@player.x+32) >= object.x && (@player.x+32) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY
+        if (@player.x+@squareSize) >= object.x && (@player.x+@squareSize) < object.x+object.sizeX && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY && !object.passable
           result = false
         end
       when 2
-        if (@player.y+32) >= object.y && (@player.y+32) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX
+        if (@player.y+@squareSize) >= object.y && (@player.y+@squareSize) < object.y+object.sizeY && (@player.x) >= object.x && (@player.x) < object.x+object.sizeX && !object.passable
           result = false
         end
       when 3
-        if (@player.y-32) < object.y+object.sizeY && (@player.y-32) >= object.y  && (@player.x) >= object.x && (@player.x) <= object.x+object.sizeX
+        if (@player.y-@squareSize) < object.y+object.sizeY && (@player.y-@squareSize) >= object.y  && (@player.x) >= object.x && (@player.x) <= object.x+object.sizeX && !object.passable
           result = false
         end
       end
