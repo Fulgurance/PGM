@@ -211,6 +211,9 @@ class GameMapScene < GameScene3D
       @player.movingUp = false
       @player.movingDown = false
 
+      @player.realX = @player.x+@squareSize/2-@player.sprite.width/2
+      @player.realY = @player.y
+
       if Gosu.button_down?(Gosu::KB_LEFT)
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
