@@ -17,16 +17,15 @@ class GameMapMovableObject < GameMapObject
     def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=32,direction=3)
         super(x,y,z,sizeX,sizeY,sizeZ)
         @spriteName = spriteName
-        @sprite = Sprite.new("Graphics/Player/#{@spriteName}Down.png",retro: true)
+        @sprite = Sprite.new("Graphics/Characters/#{@spriteName}/Down.png",retro: true)
         @direction = direction
         @speed = 1.3
-        @animationSpeed = 0.20
+        @animationSpeed = 0.2
         @currentMovementDistance = 0
         @movingLeft = false
         @movingRight = false
         @movingUp = false
         @movingDown = false
-        @pressedButtonTime = 0.0
         @movingFrame = 0
         @delayBeforeMoving = 0.3
         @movementAnimationTime = Time.now
@@ -34,22 +33,22 @@ class GameMapMovableObject < GameMapObject
 
     def lookLeft
         @movingFrame = 0
-        @sprite.insert("Graphics/Player/#{@spriteName}Left.png",0,0)
+        @sprite.insert("Graphics/Characters/#{@spriteName}/Left.png",0,0)
     end
 
     def lookRight
         @movingFrame = 0
-        @sprite.insert("Graphics/Player/#{@spriteName}Right.png",0,0)
+        @sprite.insert("Graphics/Characters/#{@spriteName}/Right.png",0,0)
     end
 
     def lookUp
         @movingFrame = 0
-        @sprite.insert("Graphics/Player/#{@spriteName}Up.png",0,0)
+        @sprite.insert("Graphics/Characters/#{@spriteName}/Up.png",0,0)
     end
 
     def lookDown
         @movingFrame = 0
-        @sprite.insert("Graphics/Player/#{@spriteName}Down.png",0,0)
+        @sprite.insert("Graphics/Characters/#{@spriteName}/Down.png",0,0)
     end
 
     def moveLeft
@@ -82,49 +81,49 @@ class GameMapMovableObject < GameMapObject
 
     def playMovingLeft
         if @movingFrame == 0
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveLeft1.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveLeft1.png",0,0)
         elsif @movingFrame == 1
-            @sprite.insert("Graphics/Player/#{@spriteName}Left.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Left.png",0,0)
         elsif @movingFrame == 2
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveLeft2.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveLeft2.png",0,0)
         else
-            @sprite.insert("Graphics/Player/#{@spriteName}Left.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Left.png",0,0)
         end
     end
 
     def playMovingRight
         if @movingFrame == 0
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveRight1.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveRight1.png",0,0)
         elsif @movingFrame == 1
-            @sprite.insert("Graphics/Player/#{@spriteName}Right.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Right.png",0,0)
         elsif @movingFrame == 2
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveRight2.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveRight2.png",0,0)
         else
-            @sprite.insert("Graphics/Player/#{@spriteName}Right.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Right.png",0,0)
         end
     end
 
     def playMovingUp
         if @movingFrame == 0
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveUp1.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveUp1.png",0,0)
         elsif @movingFrame == 1
-            @sprite.insert("Graphics/Player/#{@spriteName}Up.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Up.png",0,0)
         elsif @movingFrame == 2
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveUp2.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveUp2.png",0,0)
         else
-            @sprite.insert("Graphics/Player/#{@spriteName}Up.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Up.png",0,0)
         end
     end
 
     def playMovingDown
         if @movingFrame == 0
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveDown1.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveDown1.png",0,0)
         elsif @movingFrame == 1
-            @sprite.insert("Graphics/Player/#{@spriteName}Down.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Down.png",0,0)
         elsif @movingFrame == 2
-            @sprite.insert("Graphics/Player/#{@spriteName}MoveDown2.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/MoveDown2.png",0,0)
         else
-            @sprite.insert("Graphics/Player/#{@spriteName}Down.png",0,0)
+            @sprite.insert("Graphics/Characters/#{@spriteName}/Down.png",0,0)
         end
     end
 
@@ -135,7 +134,6 @@ class GameMapMovableObject < GameMapObject
 
         GL.PushMatrix
         GL.Translatef(@realX+$gameWindow.currentGameScene.squareSize/2,@realY+$gameWindow.currentGameScene.squareSize/2,@realZ)
-        #GL.Rotatef(-$gameWindow.currentGameScene.viewAngle,1,0,0)
         GL.Rotatef(-28,1,0,0)
         GL.Scalef(@sprite.width,@sprite.height,@sprite.height)
 

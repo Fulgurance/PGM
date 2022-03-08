@@ -30,8 +30,9 @@ class Water < GameMapGround
 
   def initialize(x,y,z)
     super("3",x,y,z)
-    self.sizeX = 96
-    self.sizeY = 96
+    self.sizeX = 32
+    self.sizeY = 32
+    self.animated = true
     self.leftPassable = true
     self.rightPassable = true
     self.upPassable = true
@@ -214,9 +215,17 @@ class MapTest < GameMapScene
                 Grass.new(96,192,0),
                 Grass.new(192,192,0),
                 Water.new(192,96,0),
+                Water.new(222,96,0),
+                Water.new(254,96,0),
+                Water.new(192,128,0),
+                Water.new(222,128,0),
+                Water.new(254,128,0),
+                Water.new(192,160,0),
+                Water.new(222,160,0),
+                Water.new(254,160,0),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
-    @events = [Event1.new("Red",64,32,0)]
+    @events = [Event1.new("BoyHero",64,32,0)]
   end
 
 end

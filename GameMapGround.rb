@@ -8,9 +8,24 @@ class GameMapGround < GameMapObject
     def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=0)
         super(x,y,z,sizeX,sizeY,sizeZ)
         @spriteName = spriteName
-        @sprite = Sprite.new("Graphics/Grounds/#{@spriteName}.png",retro: true)
+        @sprite = Sprite.new("Graphics/Grounds/#{@spriteName}/1.png",retro: true)
         @animated = false
-        @animationSpeed = 0.20
+        @animationSpeed = 0.1
+        @currentFrame = 0
+        @frameTime = Time.now
+    end
+
+    def update
+      if @animated
+        if (Time.now.to_f-@frameTime.to_f) > @animationSpeed
+          @currentFrame += 1
+          if !File.exist?("Graphics/Grounds/#{@spriteName}/#{@currentFrame}.png")
+            @currentFrame = 0
+          end
+          @sprite.insert("Graphics/Grounds/#{@spriteName}/#{@currentFrame}.png",0,0)
+          @frameTime = Time.now
+        end
+      end
     end
 
     def draw
@@ -35,7 +50,6 @@ class GameMapGround < GameMapObject
 
         GL.End
       GL.PopMatrix
-
     end
 
 end

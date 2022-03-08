@@ -29,7 +29,7 @@ class GameMapScene < GameScene3D
     @far = 700.0
     @objects = []
     @events = []
-    @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
+    @player = GameMapPlayer.new("BoyHero",playerX,playerY,playerZ)
     @player.realX = @player.x+@squareSize/2-@player.sprite.width/2
     @player.realY = @player.y
     @angleY = -320.0
@@ -85,10 +85,17 @@ class GameMapScene < GameScene3D
   end
 
   def update
+    updateObjects
     updateEvents
     updatePlayer
     updateCamera
     updateInputs
+  end
+
+  def updateObjects
+    @objects.each do |object|
+      object.update
+    end
   end
 
   def updateEvents

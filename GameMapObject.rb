@@ -31,6 +31,9 @@ class GameMapObject
         @downPassable = false
     end
 
+    def update
+    end
+
     def draw
     end
 
