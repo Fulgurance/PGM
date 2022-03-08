@@ -32,10 +32,14 @@ class Water < GameMapGround
     super("3",x,y,z)
     self.sizeX = 96
     self.sizeY = 96
-    self.leftPassable = false
-    self.rightPassable = false
-    self.upPassable = false
-    self.downPassable = false
+    self.leftPassable = true
+    self.rightPassable = true
+    self.upPassable = true
+    self.downPassable = true
+    #self.leftPassable = false
+    #self.rightPassable = false
+    #self.upPassable = false
+    #self.downPassable = false
   end
 
 end
@@ -53,8 +57,8 @@ class Panel < GameMapObject
 
   def draw
     GL.BindTexture(GL::TEXTURE_2D, @texture.gl_tex_info.tex_name)
-      GL.Enable(GL::ALPHA_TEST)
-      GL.AlphaFunc(GL::GREATER,0)
+    GL.Enable(GL::ALPHA_TEST)
+    GL.AlphaFunc(GL::GREATER,0)
 
       GL.PushMatrix
         GL.Scalef(1,1,1)
@@ -182,6 +186,18 @@ class Building < GameMapObject
 
 end
 
+class Event1 < GameMapEvent
+
+  def initialize(spriteName,x,y,z)
+    super(spriteName,x,y,z)
+    self.leftPassable = false
+    self.rightPassable = false
+    self.upPassable = false
+    self.downPassable = false
+  end
+
+end
+
 class MapTest < GameMapScene
 
   def initialize(playerX,playerY,playerZ)
@@ -200,6 +216,7 @@ class MapTest < GameMapScene
                 Water.new(192,96,0),
                 Building.new(64,64,0),
                 Panel.new(32,32,0)]
+    @events = [Event1.new("Red",64,32,0)]
   end
 
 end

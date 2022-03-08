@@ -4,4 +4,7 @@ class GameMapEvent < GameMapMovableObject
         super(spriteName,x,y,z,sizeX,sizeY,sizeZ,direction=3)
     end
 
+    def update
+    end
+
 end

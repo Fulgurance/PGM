@@ -30,6 +30,8 @@ class GameMapScene < GameScene3D
     @objects = []
     @events = []
     @player = GameMapPlayer.new("Red",playerX,playerY,playerZ)
+    @player.realX = @player.x+@squareSize/2-@player.sprite.width/2
+    @player.realY = @player.y
     @angleY = -320.0
     @angleZ = 250.0
     @cameraX = @player.realX+@squareSize/2
@@ -41,7 +43,6 @@ class GameMapScene < GameScene3D
     @upX = 0.0
     @upY = 0.0
     @upZ = 1.0
-    @movementAnimationTime = Time.now
     @inputLeftTime = Time.now
     @inputRightTime = Time.now
     @inputUpTime = Time.now
@@ -61,6 +62,8 @@ class GameMapScene < GameScene3D
   def drawGraphics
     GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT)
     GL.Enable(GL::TEXTURE_2D)
+    GL.TexParameterf(GL::TEXTURE_2D, GL::TEXTURE_MIN_FILTER, GL::NEAREST);
+    GL.TexParameterf(GL::TEXTURE_2D, GL::TEXTURE_MAG_FILTER, GL::NEAREST);
     GL.Enable(GL::DEPTH_TEST)
     GL.MatrixMode(GL::PROJECTION)
     GL.LoadIdentity
@@ -73,16 +76,30 @@ class GameMapScene < GameScene3D
     @objects.each do |object|
       object.draw
     end
+    @events.each do |event|
+      event.draw
+    end
   end
 
   def drawMap
   end
 
   def update
-    square = currentSquare
-    @player.realZ = square.z+square.sizeZ
+    updateEvents
+    updatePlayer
     updateCamera
     updateInputs
+  end
+
+  def updateEvents
+    @events.each do |event|
+      event.update
+    end
+  end
+
+  def updatePlayer
+    square = currentSquare
+    @player.realZ = square.z+square.sizeZ
   end
 
   def updateCamera
@@ -113,7 +130,7 @@ class GameMapScene < GameScene3D
       @inputBicycleTime = Time.now
     end
     if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-      if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationRunningSpeed
+      if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationRunningSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
@@ -122,12 +139,12 @@ class GameMapScene < GameScene3D
           @player.movingFrame = 0
           @playBumpSound = true
         end
-        @movementAnimationTime = Time.now
+        @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
       end
     elsif @player.onBicycle
-      if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationCyclingSpeed
+      if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationCyclingSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
@@ -136,12 +153,12 @@ class GameMapScene < GameScene3D
           @player.movingFrame = 0
           @playBumpSound = true
         end
-        @movementAnimationTime = Time.now
+        @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
       end
     else
-      if (Time.now.to_f-@movementAnimationTime.to_f) > @player.animationSpeed
+      if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
@@ -150,7 +167,7 @@ class GameMapScene < GameScene3D
           @player.movingFrame = 0
           @playBumpSound = true
         end
-        @movementAnimationTime = Time.now
+        @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
       end
@@ -315,6 +332,10 @@ class GameMapScene < GameScene3D
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           @inputDownTime = Time.now
         end
+
+        @player.realX = @player.x+@squareSize/2-@player.sprite.width/2
+        @player.realY = @player.y
+
         case @player.direction
         when 0
           if @player.onBicycle
@@ -357,7 +378,7 @@ class GameMapScene < GameScene3D
 
   def nextSquare(direction)
     result = 0
-    @objects.each do |object|
+    (@objects+@events).each do |object|
       case direction
       when 0
         if (@player.x-@squareSize) < object.x+object.sizeX && (@player.x-@squareSize) >= object.x && (@player.y) >= object.y && (@player.y) < object.y+object.sizeY

@@ -12,6 +12,7 @@ class GameMapMovableObject < GameMapObject
     attr_accessor :movingUp
     attr_accessor :movingDown
     attr_accessor :delayBeforeMoving
+    attr_accessor :movementAnimationTime
 
     def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=32,direction=3)
         super(x,y,z,sizeX,sizeY,sizeZ)
@@ -28,6 +29,7 @@ class GameMapMovableObject < GameMapObject
         @pressedButtonTime = 0.0
         @movingFrame = 0
         @delayBeforeMoving = 0.3
+        @movementAnimationTime = Time.now
     end
 
     def lookLeft
