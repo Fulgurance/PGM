@@ -15,7 +15,7 @@ class GameMapScene < GameScene3D
   attr_accessor :cameraReferenceZ
   attr_accessor :backgroundMusic
 
-  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic)
+  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
     super()
     @mapX = 0.0
     @mapY = 0.0
