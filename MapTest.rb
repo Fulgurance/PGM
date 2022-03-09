@@ -278,7 +278,7 @@ class Grass < GameMapGround
 
       GL.Disable(GL::ALPHA_TEST)
     GL.PopMatrix
-=begin
+
     #Top(Left)
     GL.BindTexture(GL::TEXTURE_2D, @texture2.gl_tex_info.tex_name)
     GL.Enable(GL::ALPHA_TEST)
@@ -328,7 +328,7 @@ class Grass < GameMapGround
 
       GL.Disable(GL::ALPHA_TEST)
     GL.PopMatrix
-=end
+
   end
 
 end
