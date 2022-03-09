@@ -280,7 +280,7 @@ class Grass < GameMapGround
     GL.PopMatrix
 
     #Top(Left)
-    GL.BindTexture(GL::TEXTURE_2D, @texture2.gl_tex_info.tex_name)
+    GL.BindTexture(GL::TEXTURE_2D, @texture3.gl_tex_info.tex_name)
     GL.Enable(GL::ALPHA_TEST)
     GL.AlphaFunc(GL::GREATER,0)
 
@@ -288,17 +288,17 @@ class Grass < GameMapGround
       GL.Scalef(1,1,1)
 
       GL.Begin(GL::QUADS)
-        GL.TexCoord2d(@texture2.gl_tex_info.left,@texture2.gl_tex_info.bottom)
-        GL.Vertex3f(@x, @y+@texture2.width, @z+@texture.height)
+        GL.TexCoord2d(@texture3.gl_tex_info.left,@texture3.gl_tex_info.bottom)
+        GL.Vertex3f(@x, @y+@texture3.width, @z+@texture.height)
 
-        GL.TexCoord2d(@texture2.gl_tex_info.right,@texture2.gl_tex_info.bottom)
+        GL.TexCoord2d(@texture3.gl_tex_info.right,@texture3.gl_tex_info.bottom)
         GL.Vertex3f(@x, @y, @z+@texture.height)
 
-        GL.TexCoord2d(@texture2.gl_tex_info.right,@texture2.gl_tex_info.top)
-        GL.Vertex3f(@x, @y, @z+@texture.height+@texture2.height)
+        GL.TexCoord2d(@texture3.gl_tex_info.right,@texture3.gl_tex_info.top)
+        GL.Vertex3f(@x, @y, @z+@texture.height+@texture3.height)
 
-        GL.TexCoord2d(@texture2.gl_tex_info.left,@texture2.gl_tex_info.top)
-        GL.Vertex3f(@x, @y+@texture2.width, @z+@texture.height+@texture2.height)
+        GL.TexCoord2d(@texture3.gl_tex_info.left,@texture3.gl_tex_info.top)
+        GL.Vertex3f(@x, @y+@texture3.width, @z+@texture.height+@texture3.height)
       GL.End
 
       GL.Disable(GL::ALPHA_TEST)
