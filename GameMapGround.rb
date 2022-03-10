@@ -8,7 +8,7 @@ class GameMapGround < GameMapObject
     def initialize(spriteName,x,y,z,sizeX=32,sizeY=32,sizeZ=0)
         super(x,y,z,sizeX,sizeY,sizeZ)
         @spriteName = spriteName
-        @sprite = Sprite.new("Graphics/Grounds/#{@spriteName}/1.png",retro: true)
+        @sprite = Sprite.new("Graphics/Grounds/#{@spriteName}/0.png",retro: true)
         @animated = false
         @animationSpeed = 0.1
         @currentFrame = 0
