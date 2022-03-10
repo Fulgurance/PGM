@@ -50,7 +50,9 @@ class GameMapScene < GameScene3D
     @inputBicycleTime = Time.now
     @delayBeforeNextInput = 0.20
     @playBumpSound = false
+    @playGrassSound = false
     @bumpSound = Gosu::Sample.new("Audios/SE/Bump.wav")
+    @grassSound = Gosu::Sample.new("Audios/SE/Grass.wav")
     @bicycleSound = Gosu::Sample.new("Audios/SE/Bicycle.wav")
     @bicycleMusic = Gosu::Song.new("Audios/BGM/Bicycle.wav")
     if backgroundMusic != nil
@@ -141,42 +143,51 @@ class GameMapScene < GameScene3D
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
+          @playGrassSound = true
         end
         if @player.movingFrame > 3
           @player.movingFrame = 0
           @playBumpSound = true
+          @playGrassSound = true
         end
         @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
+        @playGrassSound = false
       end
     elsif @player.onBicycle
       if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationCyclingSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
+          @playGrassSound = true
         end
         if @player.movingFrame > 3
           @player.movingFrame = 0
           @playBumpSound = true
+          @playGrassSound = true
         end
         @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
+        @playGrassSound = false
       end
     else
       if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationSpeed
         @player.movingFrame += 1
         if @player.movingFrame == 2
           @playBumpSound = true
+          @playGrassSound = true
         end
         if @player.movingFrame > 3
           @player.movingFrame = 0
           @playBumpSound = true
+          @playGrassSound = true
         end
         @player.movementAnimationTime = Time.now
       else
         @playBumpSound = false
+        @playGrassSound = false
       end
     end
     if @player.movingLeft && @player.currentMovementDistance < @squareSize
@@ -225,7 +236,8 @@ class GameMapScene < GameScene3D
         @player.direction = 0
         if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_LEFT)
-            if (@player.x-@squareSize) >= @mapX && nextSquare(0).rightPassable && currentSquare.leftPassable
+            nextSquare = nextSquare(0)
+            if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && currentSquare.leftPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runLeft
               elsif @player.onBicycle
@@ -234,6 +246,9 @@ class GameMapScene < GameScene3D
                 @player.moveLeft
               end
               @player.x -= @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
             else
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningLeft
@@ -252,7 +267,8 @@ class GameMapScene < GameScene3D
         @player.direction = 1
         if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_RIGHT)
-            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare(1).leftPassable && currentSquare.rightPassable
+            nextSquare = nextSquare(1)
+            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && currentSquare.rightPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runRight
               elsif @player.onBicycle
@@ -261,6 +277,9 @@ class GameMapScene < GameScene3D
                 @player.moveRight
               end
               @player.x += @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
             else
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningRight
@@ -279,6 +298,7 @@ class GameMapScene < GameScene3D
         @player.direction = 2
         if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_UP)
+            nextSquare = nextSquare(2)
             if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare(2).downPassable && currentSquare.upPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runUp
@@ -288,6 +308,9 @@ class GameMapScene < GameScene3D
                 @player.moveUp
               end
               @player.y += @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
             else
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningUp
@@ -306,7 +329,8 @@ class GameMapScene < GameScene3D
         @player.direction = 3
         if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
           if Gosu.button_down?(Gosu::KB_DOWN)
-            if (@player.y-@squareSize) >= @mapY && nextSquare(3).upPassable && currentSquare.downPassable
+            nextSquare = nextSquare(3)
+            if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && currentSquare.downPassable
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.runDown
               elsif @player.onBicycle
@@ -315,6 +339,9 @@ class GameMapScene < GameScene3D
                 @player.moveDown
               end
               @player.y -= @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
             else
               if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
                 @player.playRunningDown
