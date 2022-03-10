@@ -22,10 +22,10 @@ class Grass < GameMapGround
     self.rightPassable = true
     self.upPassable = true
     self.downPassable = true
-    @texture = Sprite.new('Graphics/Grass/1/1.png', retro: true)
-    @texture1 = Sprite.new('Graphics/Grass/1/2.png', retro: true)
-    @texture2 = Sprite.new('Graphics/Grass/1/3.png', retro: true)
-    @texture3 = Sprite.new('Graphics/Grass/1/4.png', retro: true)
+    #@texture = Sprite.new('Graphics/Grass/1/1.png', retro: true)
+    #@texture1 = Sprite.new('Graphics/Grass/1/2.png', retro: true)
+    @texture2 = Sprite.new('Graphics/Grass/1/0.png', retro: true)
+    @texture3 = Sprite.new('Graphics/Grass/1/1.png', retro: true)
   end
 
   def draw
@@ -90,7 +90,7 @@ class Grass < GameMapGround
 
       GL.Begin(GL::QUADS)
         GL.TexCoord2d(@texture2.gl_tex_info.left,@texture2.gl_tex_info.bottom)
-        GL.Vertex3f(@x, @y+12, @z+@texture.height)
+        GL.Vertex3f(@x, @y+12, @z)
 
         GL.TexCoord2d(@texture2.gl_tex_info.right,@texture2.gl_tex_info.bottom)
         GL.Vertex3f(@x+@texture2.width, @y+12, @z)
@@ -179,7 +179,7 @@ class Grass < GameMapGround
 
       GL.Disable(GL::ALPHA_TEST)
     GL.PopMatrix
-=begin
+#=begin
     #Top(Left)
     GL.BindTexture(GL::TEXTURE_2D, @texture3.gl_tex_info.tex_name)
     GL.Enable(GL::ALPHA_TEST)
@@ -229,7 +229,7 @@ class Grass < GameMapGround
 
       GL.Disable(GL::ALPHA_TEST)
     GL.PopMatrix
-=end
+#=end
 
   end
 
