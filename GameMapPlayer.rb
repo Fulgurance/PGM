@@ -13,6 +13,19 @@ class GameMapPlayer < GameMapMovableObject
         @onBicycle = false
     end
 
+    def update
+        self.movingFrame += 1
+        if self.movingFrame == 2
+            self.movingOneStep = true
+        end
+        if self.movingFrame > 3
+            self.movingFrame = 0
+            self.movingOneStep = true
+        end
+        self.movementAnimationTime = Time.now
+    end
+
+
     def lookOnBicycleLeft
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/OnBicycleLeft.png",0,0)

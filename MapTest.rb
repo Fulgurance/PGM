@@ -413,6 +413,22 @@ class Event1 < GameMapEvent
     self.downPassable = false
   end
 
+  def update
+    super
+    #lookLeft
+    #lookRight
+    #lookUp
+    #lookDown
+    #moveRight
+    #playMovingRight
+    #moveDown
+    #playMovingDown
+    #moveLeft
+    #playMovingLeft
+    #moveUp
+    #playMovingUp
+  end
+
 end
 
 class MapTest < GameMapScene

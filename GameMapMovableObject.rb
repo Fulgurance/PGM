@@ -6,6 +6,7 @@ class GameMapMovableObject < GameMapObject
     attr_accessor :speed
     attr_accessor :animationSpeed
     attr_accessor :currentMovementDistance
+    attr_accessor :movingOneStep
     attr_accessor :movingFrame
     attr_accessor :movingLeft
     attr_accessor :movingRight
@@ -22,6 +23,7 @@ class GameMapMovableObject < GameMapObject
         @speed = 1.3
         @animationSpeed = 0.2
         @currentMovementDistance = 0
+        @movingOneStep = false
         @movingLeft = false
         @movingRight = false
         @movingUp = false
@@ -29,6 +31,22 @@ class GameMapMovableObject < GameMapObject
         @movingFrame = 0
         @delayBeforeMoving = 0.3
         @movementAnimationTime = Time.now
+    end
+
+    def update
+        if (Time.now.to_f-@movementAnimationTime.to_f) > @animationSpeed
+            @movingFrame += 1
+            if @movingFrame == 2
+                @movingOneStep = true
+            end
+            if @movingFrame > 3
+                @movingFrame = 0
+                @movingOneStep = true
+            end
+            @movementAnimationTime = Time.now
+        else
+            @movingOneStep = false
+        end
     end
 
     def lookLeft
@@ -125,6 +143,41 @@ class GameMapMovableObject < GameMapObject
         else
             @sprite.insert("Graphics/Characters/#{@spriteName}/Down.png",0,0)
         end
+    end
+
+    def currentSquare
+        result = 0
+        $gameWindow.currentGameScene.objects.each do |object|
+            if self.x < object.x+object.sizeX && self.x >= object.x && self.y < object.y+object.sizeY && self.y >= object.y
+                result = object
+            end
+        end
+        return result
+    end
+
+    def nextSquare(direction)
+        result = 0
+        ($gameWindow.currentGameScene.objects+$gameWindow.currentGameScene.events).each do |object|
+            case direction
+            when 0
+                if (self.x-$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.x-$gameWindow.currentGameScene.squareSize) >= object.x && (self.y) >= object.y && (self.y) < object.y+object.sizeY
+                result = object
+                end
+            when 1
+                if (self.x+$gameWindow.currentGameScene.squareSize) >= object.x && (self.x+$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.y) >= object.y && (self.y) < object.y+object.sizeY
+                result = object
+                end
+            when 2
+                if (self.y+$gameWindow.currentGameScene.squareSize) >= object.y && (self.y+$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.x) >= object.x && (self.x) < object.x+object.sizeX
+                result = object
+                end
+            when 3
+                if (self.y-$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.y-$gameWindow.currentGameScene.squareSize) >= object.y  && (self.x) >= object.x && (self.x) < object.x+object.sizeX
+                result = object
+                end
+            end
+        end
+        return result
     end
 
     def draw

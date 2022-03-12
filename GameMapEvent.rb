@@ -14,6 +14,7 @@ class GameMapEvent < GameMapMovableObject
     end
 
     def update
+        super
     end
 
 end
