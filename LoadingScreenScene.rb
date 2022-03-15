@@ -1,4 +1,4 @@
-class LoadingScreen < GameScene
+class LoadingScreenScene < GameScene
 
     def initialize
         @flatPokeBallAngle = 0

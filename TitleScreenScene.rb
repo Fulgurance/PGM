@@ -1,4 +1,4 @@
-class TitleScreen < GameScene
+class TitleScreenScene < GameScene
 
     def initialize
         @backgroundMusic = Gosu::Song.new("Audios/BGM/TitleScreen.wav")

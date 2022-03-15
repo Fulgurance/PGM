@@ -411,31 +411,19 @@ class Event1 < GameMapEvent
     self.rightPassable = false
     self.upPassable = false
     self.downPassable = false
+    @f = false
   end
 
   def update
     super
-    #lookLeft
-    #lookRight
-    #lookUp
-    #lookDown
-    #moveRight
-    #playMovingRight
-    #moveDown
-    #playMovingDown
-    #moveLeft
-    #playMovingLeft
-    #moveUp
-    #playMovingUp
   end
 
 end
 
 class MapTest < GameMapScene
 
-  def initialize(playerX,playerY,playerZ)
-    super(playerX,playerY,playerZ,9*32,9*32)#,"Test.wav")
-    @texture2 = Sprite.new('Tree.png', retro: true)
+  def initialize(name,panelNumber,playerX,playerY,playerZ)
+    super(name,panelNumber,playerX,playerY,playerZ,9*32,9*32)#,"Test.wav")
 
     @objects = [Road.new(0,0,0),
                 Road.new(64,0,0),

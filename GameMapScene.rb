@@ -4,8 +4,10 @@ class GameMapScene < GameScene3D
   attr_accessor :objects
   attr_accessor :events
 
-  def initialize(playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
+  def initialize(name,panelNumber,playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
     super()
+    @name = name
+    @panelNumber = panelNumber
     @mapX = 0.0
     @mapY = 0.0
     @mapZ = 0.0
@@ -32,20 +34,32 @@ class GameMapScene < GameScene3D
     @upX = 0.0
     @upY = 0.0
     @upZ = 1.0
+    @panelTime = Time.now
     @inputLeftTime = Time.now
     @inputRightTime = Time.now
     @inputUpTime = Time.now
     @inputDownTime = Time.now
     @inputBicycleTime = Time.now
+    @panelDuration = 3.0
     @delayBeforeNextInput = 0.20
-    @bumpSound = Gosu::Sample.new("Audios/SE/Bump.wav")
-    @grassSound = Gosu::Sample.new("Audios/SE/Grass.wav")
-    @bicycleSound = Gosu::Sample.new("Audios/SE/Bicycle.wav")
-    @bicycleMusic = Gosu::Song.new("Audios/BGM/Bicycle.wav")
+    @menuSound = Sound.new("Audios/Sounds/Menu.wav")
+    @bumpSound = Sound.new("Audios/Sounds/Bump.wav")
+    @grassSound = Sound.new("Audios/Sounds/Grass.wav")
+    @bicycleSound = Sound.new("Audios/Sounds/Bicycle.wav")
+    @bicycleMusic = Music.new("Audios/Musics/Bicycle.wav")
     if backgroundMusic != nil
       @backgroundMusic = Gosu::Song.new(backgroundMusic)
       @backgroundMusic.play(true)
     end
+    @panelSprite = Sprite.new("Graphics/MapPanel/#{@panelNumber}.png")
+    @panelSprite.color = Color.new(100,255,255,255)
+    @panelText = Text.new(@name,Font.new(24))
+    @panelText.x = @panelSprite.x+@panelSprite.width/2-@panelText.width/2
+    @panelText.y = @panelSprite.y+@panelSprite.height/2-@panelText.height/2
+    @panelText.z = @panelSprite.z+1
+    @panelText.color = Color::WHITE
+
+    @standby = false
   end
 
   def drawGraphics
@@ -60,17 +74,41 @@ class GameMapScene < GameScene3D
     GL.MatrixMode(GL::MODELVIEW)
     GL.LoadIdentity
     GLU.LookAt(@cameraX,@cameraY,@cameraZ,@cameraReferenceX,@cameraReferenceY,@cameraReferenceZ,@upX,@upY,@upZ)
+    drawMapPanel
     drawMap
-    @player.draw
-    @objects.each do |object|
-      object.draw
-    end
-    @events.each do |event|
-      event.draw
+    drawPlayer
+    drawObjects
+    drawEvents
+  end
+
+  def drawMapPanel
+    if @panelText != nil
+      @panelSprite.draw
+      @panelText.draw
+      if (Time.now.to_f-@panelTime.to_f) > @panelDuration
+        @panelText = nil
+        @panelSprite = nil
+      end
     end
   end
 
   def drawMap
+  end
+
+  def drawPlayer
+    @player.draw
+  end
+
+  def drawObjects
+    @objects.each do |object|
+      object.draw
+    end
+  end
+
+  def drawEvents
+    @events.each do |event|
+      event.draw
+    end
   end
 
   def update
@@ -78,7 +116,7 @@ class GameMapScene < GameScene3D
     updateEvents
     updatePlayer
     updateCamera
-    updateInputs
+    updateInputs if !@standby
   end
 
   def updateObjects
@@ -108,6 +146,12 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
+    if Gosu.button_down?(Gosu::KB_ESCAPE)
+      @menuSound.play
+      #GameMenu.new
+      @standby = true
+    end
+
     if Gosu.button_down?(Gosu::KB_RIGHT_CONTROL) && (Time.now.to_f-@inputBicycleTime.to_f) > @delayBeforeNextInput
       if !@player.onBicycle
         if @backgroundMusic != nil

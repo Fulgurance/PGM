@@ -5,6 +5,8 @@ require './Color'
 require './Font'
 require './Text'
 require './Sprite'
+require './Sound'
+require './Music'
 require './GameWindow'
 require './GameMapObject'
 require './GameMapGround'
@@ -14,11 +16,11 @@ require './GameMapPlayer'
 require './GameScene'
 require './GameScene3D'
 require './GameMapScene'
-require './StartingCredits'
-require './TitleScreen'
-require './LoadingScreen'
+require './StartingCreditsScene'
+require './TitleScreenScene'
+require './LoadingScreenScene'
 require './MapTest'
 
 $gameWindow = GameWindow.new("Pokemon",940,528)
-$gameWindow.currentGameScene = MapTest.new(0,0,0)#StartingCredits.new
+$gameWindow.currentGameScene = StartingCreditsScene.new
 $gameWindow.show

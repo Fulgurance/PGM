@@ -8,7 +8,6 @@ class GameMapEvent < GameMapMovableObject
         @speed = 1.3
         @animationSpeed = 0.2
         @currentMovementDistance = 0
-        @pressedButtonTime = 0.0
         @movingFrame = 0
         @delayBeforeMoving = 0.3
     end
