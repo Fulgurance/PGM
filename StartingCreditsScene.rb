@@ -65,13 +65,6 @@ class StartingCreditsScene < GameScene
     end
 
     def draw
-        #if !@startGameFreakScreen
-            #@creditsText.draw($gameWindow.width/2-@creditsText.width/2,$gameWindow.height/2-#@creditsText.height/2,0,1.0,1.0, #Color.new(255,@creditsTextColorRGB,@creditsTextColorRGB,@creditsTextColorRGB))
-            #@creditsText.color = #Color.new(255,@creditsTextColorRGB,@creditsTextColorRGB,@creditsTextColorRGB)
-        #else
-            #@gameFreakSprite.draw(0,0,0,1.0,1.0,Color.new(@gameFreakSpriteAlpha,255,255,255))
-            #@gameFreakSprite.color = Color.new(@gameFreakSpriteAlpha,255,255,255)
-        #end
         @creditsText.draw if !@startGameFreakScreen
         @gameFreakSprite.draw if @startGameFreakScreen
     end
