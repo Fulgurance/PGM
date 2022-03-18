@@ -32,6 +32,23 @@ class GameMenuScene < GameScene
         @saveIcon.y = $gameWindow.height/2-@pokedexIcon.width/2
         @saveIcon.z = @background.z+1
 
+        @pokedexText = Text.new("Pokédex")
+        @pokedexText.x = @pokedexIcon.x+@pokedexIcon.width/2-@pokedexText.width/2
+        @pokedexText.y = @pokedexIcon.y+@pokedexIcon.height+5
+        @pokedexText.z = @pokedexIcon.z+1
+        @pokemonText = Text.new("Pokémon")
+        @pokemonText.x = @pokemonIcon.x+@pokemonIcon.width/2-@pokemonText.width/2
+        @pokemonText.y = @pokemonIcon.y+@pokemonIcon.height+5
+        @pokemonText.z = @pokemonIcon.z+1
+        @bagText = Text.new("Sac")
+        @bagText.x = @bagIcon.x+@bagIcon.width/2-@bagText.width/2
+        @bagText.y = @bagIcon.y+@bagIcon.height+5
+        @bagText.z = @bagIcon.z+1
+        @saveText = Text.new("Sauvegarder")
+        @saveText.x = @saveIcon.x+@saveIcon.width/2-@saveText.width/2
+        @saveText.y = @saveIcon.y+@saveIcon.height+5
+        @saveText.z = @saveIcon.z+1
+
         @delayBeforeNextInput = 0.2
         @inputEscapeTime = Time.now
         @cursorTime = Time.now
@@ -47,6 +64,10 @@ class GameMenuScene < GameScene
         @pokemonIcon.draw
         @bagIcon.draw
         @saveIcon.draw
+        @pokedexText.draw
+        @pokemonText.draw
+        @bagText.draw
+        @saveText.draw
     end
 
     def update
