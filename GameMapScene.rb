@@ -154,6 +154,8 @@ class GameMapScene < GameScene3D
 
   def updateInputs
     if Gosu.button_down?(Gosu::KB_ESCAPE)  && (Time.now.to_f-@inputEscapeTime.to_f) > @delayBeforeNextInput && !@standby && @player.currentMovementDistance == 0
+      @panelText = nil
+      @panelSprite = nil
       @openMenuSound.play
       @standby = true
       @menu = GameMenuScene.new
