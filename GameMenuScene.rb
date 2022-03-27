@@ -1,6 +1,7 @@
 class GameMenuScene < GameScene
 
     def initialize
+        super
         @background = Sprite.new("Graphics/Menu/Background.png")
         @background.color = Color.new(120,255,255,255)
         @pokedexIcon = Sprite.new("Graphics/Menu/PokedexSelected.png")
@@ -49,13 +50,12 @@ class GameMenuScene < GameScene
         @saveText.y = @saveIcon.y+@saveIcon.height+5
         @saveText.z = @saveIcon.z+1
 
-        @delayBeforeNextInput = 0.2
-        @inputEscapeTime = Time.now
-        @cursorTime = Time.now
-        @index = 0
-
         @cursorMenuSound = Sound.new("Audios/Sounds/CursorMenu.wav")
+        @selectMenuSound = Sound.new("Audios/Sounds/SelectMenu.wav")
         @exitMenuSound = Sound.new("Audios/Sounds/ExitMenu.wav")
+
+        @index = 0
+        @delayBetweenInputs = 0.14
     end
 
     def draw
@@ -77,44 +77,64 @@ class GameMenuScene < GameScene
             @pokemonIcon.insert("Graphics/Menu/Pokemon.png",0,0)
             @bagIcon.insert("Graphics/Menu/Bag.png",0,0)
             @saveIcon.insert("Graphics/Menu/Save.png",0,0)
+            #@pokedexText.color = Color.new(255,255,255,255)
+            #@pokemonText.color = Color.new(255,90,90,90)
+            #@bagText.color = Color.new(255,90,90,90)
+            #@saveText.color = Color.new(255,90,90,90)
         when 1
             @pokedexIcon.insert("Graphics/Menu/Pokedex.png",0,0)
             @pokemonIcon.insert("Graphics/Menu/PokemonSelected.png",0,0)
             @bagIcon.insert("Graphics/Menu/Bag.png",0,0)
             @saveIcon.insert("Graphics/Menu/Save.png",0,0)
+            #@pokedexText.color = Color.new(255,90,90,90)
+            #@pokemonText.color = Color.new(255,255,255,255)
+            #@bagText.color = Color.new(255,90,90,90)
+            #@saveText.color = Color.new(255,90,90,90)
         when 2
             @pokedexIcon.insert("Graphics/Menu/Pokedex.png",0,0)
             @pokemonIcon.insert("Graphics/Menu/Pokemon.png",0,0)
             @bagIcon.insert("Graphics/Menu/BagSelected.png",0,0)
             @saveIcon.insert("Graphics/Menu/Save.png",0,0)
+            #@pokedexText.color = Color.new(255,90,90,90)
+            #@pokemonText.color = Color.new(255,90,90,90)
+            #@bagText.color = Color.new(255,255,255,255)
+            #@saveText.color = Color.new(255,90,90,90)
         when 3
             @pokedexIcon.insert("Graphics/Menu/Pokedex.png",0,0)
             @pokemonIcon.insert("Graphics/Menu/Pokemon.png",0,0)
             @bagIcon.insert("Graphics/Menu/Bag.png",0,0)
             @saveIcon.insert("Graphics/Menu/SaveSelected.png",0,0)
+            #@pokedexText.color = Color.new(255,90,90,90)
+            #@pokemonText.color = Color.new(255,90,90,90)
+            #@bagText.color = Color.new(255,90,90,90)
+            #@saveText.color = Color.new(255,255,255,255)
         end
         updateInputs
     end
 
     def updateInputs
-        if Gosu.button_down?(Gosu::KB_ESCAPE) && (Time.now.to_f-@inputEscapeTime.to_f) > @delayBeforeNextInput
+        if Input.pressed(Key::KeyboardEscape)
             @exitMenuSound.play
             $gameWindow.currentGameScene.standby = false
-            $gameWindow.currentGameScene.inputEscapeTime = Time.now
+            Input.reset
         end
 
-        if Gosu.button_down?(Gosu::KB_LEFT) && (Time.now.to_f-@cursorTime.to_f) > @delayBeforeNextInput
+        if Input.pressed(Key::KeyboardLeft) && (Time.now.to_f-Input.lastPressedTime(Key::KeyboardLeft).to_f) > @delayBetweenInputs
             @cursorMenuSound.play
             @index -=1
             @index = 3 if @index < 0
-            @cursorTime = Time.now
+            Input.resetTime(Key::KeyboardLeft)
         end
 
-        if Gosu.button_down?(Gosu::KB_RIGHT) && (Time.now.to_f-@cursorTime.to_f) > @delayBeforeNextInput
+        if Input.pressed(Key::KeyboardRight) && (Time.now.to_f-Input.lastPressedTime(Key::KeyboardRight).to_f) > @delayBetweenInputs
             @cursorMenuSound.play
             @index +=1
             @index = 0 if @index > 3
-            @cursorTime = Time.now
+            Input.resetTime(Key::KeyboardRight)
+        end
+
+        if Input.pressed(Key::KeyboardReturn)
+            @selectMenuSound.play
         end
     end
 

@@ -3,7 +3,6 @@ class GameMapScene < GameScene3D
   attr_accessor :squareSize
   attr_accessor :objects
   attr_accessor :events
-  attr_accessor :inputEscapeTime
   attr_accessor :standby
 
   def initialize(name,panelNumber,playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
@@ -37,12 +36,6 @@ class GameMapScene < GameScene3D
     @upY = 0.0
     @upZ = 1.0
     @panelTime = Time.now
-    @inputEscapeTime = Time.now
-    @inputLeftTime = Time.now
-    @inputRightTime = Time.now
-    @inputUpTime = Time.now
-    @inputDownTime = Time.now
-    @inputBicycleTime = Time.now
     @panelDuration = 3.0
     @delayBeforeNextInput = 0.2
     @openMenuSound = Sound.new("Audios/Sounds/OpenMenu.wav")
@@ -153,7 +146,7 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
-    if Gosu.button_down?(Gosu::KB_ESCAPE)  && (Time.now.to_f-@inputEscapeTime.to_f) > @delayBeforeNextInput && !@standby && @player.currentMovementDistance == 0
+    if Input.keepPressed(Key::KeyboardEscape) && !@standby && @player.currentMovementDistance == 0
       @panelText = nil
       @panelSprite = nil
       @openMenuSound.play
@@ -163,7 +156,7 @@ class GameMapScene < GameScene3D
 
     if !@standby
       @menu = nil
-      if Gosu.button_down?(Gosu::KB_RIGHT_CONTROL) && (Time.now.to_f-@inputBicycleTime.to_f) > @delayBeforeNextInput
+      if Input.pressed(Key::KeyboardRightControl) && (Time.now.to_f-Input.lastPressedTime(Key::KeyboardRightControl).to_f) > @delayBeforeNextInput
         if !@player.onBicycle
           if @backgroundMusic != nil
             @backgroundMusic.stop
@@ -178,10 +171,10 @@ class GameMapScene < GameScene3D
             @backgroundMusic.play(true)
           end
         end
-        @inputBicycleTime = Time.now
+        Input.resetTime(Key::KeyboardRightControl)
       end
 
-      if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
+      if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
         if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationRunningSpeed
           @player.update
         else
@@ -202,7 +195,7 @@ class GameMapScene < GameScene3D
       end
 
       if @player.movingLeft && @player.currentMovementDistance < @squareSize
-        if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
           @player.runLeft
         elsif @player.onBicycle
           @player.cyclingLeft
@@ -210,7 +203,7 @@ class GameMapScene < GameScene3D
           @player.moveLeft
         end
       elsif @player.movingRight && @player.currentMovementDistance < @squareSize
-        if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
           @player.runRight
         elsif @player.onBicycle
           @player.cyclingRight
@@ -218,7 +211,7 @@ class GameMapScene < GameScene3D
           @player.moveRight
         end
       elsif @player.movingUp && @player.currentMovementDistance < @squareSize
-        if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
           @player.runUp
         elsif @player.onBicycle
           @player.cyclingUp
@@ -226,7 +219,7 @@ class GameMapScene < GameScene3D
           @player.moveUp
         end
       elsif @player.movingDown && @player.currentMovementDistance < @squareSize
-        if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
           @player.runDown
         elsif @player.onBicycle
           @player.cyclingDown
@@ -244,142 +237,134 @@ class GameMapScene < GameScene3D
 
         square = @player.currentSquare
 
-        if Gosu.button_down?(Gosu::KB_LEFT)
+        if Input.pressed(Key::KeyboardLeft)
           @player.direction = 0
-          if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
-            if Gosu.button_down?(Gosu::KB_LEFT)
-              nextSquare = @player.nextSquare(0)
-              if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && square.leftPassable
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.runLeft
-                elsif @player.onBicycle
-                  @player.cyclingLeft
-                else
-                  @player.moveLeft
-                end
-                @player.x -= @squareSize
-                if nextSquare.class == Grass
-                  @grassSound.play
-                end
+          if Input.keepPressed(Key::KeyboardLeft,@player.delayBeforeMoving)
+            nextSquare = @player.nextSquare(0)
+            if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && square.leftPassable
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.runLeft
+              elsif @player.onBicycle
+                @player.cyclingLeft
               else
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.playRunningLeft
-                elsif @player.onBicycle
-                  @player.playCyclingLeft
-                else
-                  @player.playMovingLeft
-                end
-                if @player.movingOneStep
-                  @bumpSound.play
-                end
+                @player.moveLeft
+              end
+              @player.x -= @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
+            else
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.playRunningLeft
+              elsif @player.onBicycle
+                @player.playCyclingLeft
+              else
+                @player.playMovingLeft
+              end
+              if @player.movingOneStep
+                @bumpSound.play
               end
             end
           end
-        elsif Gosu.button_down?(Gosu::KB_RIGHT)
+        elsif Input.pressed(Key::KeyboardRight)
           @player.direction = 1
-          if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
-            if Gosu.button_down?(Gosu::KB_RIGHT)
-              nextSquare = @player.nextSquare(1)
-              if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && square.rightPassable
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.runRight
-                elsif @player.onBicycle
-                  @player.cyclingRight
-                else
-                  @player.moveRight
-                end
-                @player.x += @squareSize
-                if nextSquare.class == Grass
-                  @grassSound.play
-                end
+          if Input.keepPressed(Key::KeyboardRight,@player.delayBeforeMoving)
+            nextSquare = @player.nextSquare(1)
+            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && square.rightPassable
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.runRight
+              elsif @player.onBicycle
+                @player.cyclingRight
               else
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.playRunningRight
-                elsif @player.onBicycle
-                  @player.playCyclingRight
-                else
-                  @player.playMovingRight
-                end
-                if @player.movingOneStep
-                  @bumpSound.play
-                end
+                @player.moveRight
+              end
+              @player.x += @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
+            else
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.playRunningRight
+              elsif @player.onBicycle
+                @player.playCyclingRight
+              else
+                @player.playMovingRight
+              end
+              if @player.movingOneStep
+                @bumpSound.play
               end
             end
           end
-        elsif Gosu.button_down?(Gosu::KB_UP)
+        elsif Input.pressed(Key::KeyboardUp)
           @player.direction = 2
-          if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
-            if Gosu.button_down?(Gosu::KB_UP)
-              nextSquare = @player.nextSquare(2)
-              if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare.downPassable && square.upPassable
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.runUp
-                elsif @player.onBicycle
-                  @player.cyclingUp
-                else
-                  @player.moveUp
-                end
-                @player.y += @squareSize
-                if nextSquare.class == Grass
-                  @grassSound.play
-                end
+          if Input.keepPressed(Key::KeyboardUp,@player.delayBeforeMoving)
+            nextSquare = @player.nextSquare(2)
+            if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare.downPassable && square.upPassable
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.runUp
+              elsif @player.onBicycle
+                @player.cyclingUp
               else
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.playRunningUp
-                elsif @player.onBicycle
-                  @player.playCyclingUp
-                else
-                  @player.playMovingUp
-                end
-                if @player.movingOneStep
-                  @bumpSound.play
-                end
+                @player.moveUp
+              end
+              @player.y += @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
+            else
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.playRunningUp
+              elsif @player.onBicycle
+                @player.playCyclingUp
+              else
+                @player.playMovingUp
+              end
+              if @player.movingOneStep
+                @bumpSound.play
               end
             end
           end
-        elsif Gosu.button_down?(Gosu::KB_DOWN)
+        elsif Input.pressed(Key::KeyboardDown)
           @player.direction = 3
-          if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
-            if Gosu.button_down?(Gosu::KB_DOWN)
-              nextSquare = @player.nextSquare(3)
-              if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && square.downPassable
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.runDown
-                elsif @player.onBicycle
-                  @player.cyclingDown
-                else
-                  @player.moveDown
-                end
-                @player.y -= @squareSize
-                if nextSquare.class == Grass
-                  @grassSound.play
-                end
+          if Input.keepPressed(Key::KeyboardDown,@player.delayBeforeMoving)
+            nextSquare = @player.nextSquare(3)
+            if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && square.downPassable
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.runDown
+              elsif @player.onBicycle
+                @player.cyclingDown
               else
-                if Gosu.button_down?(Gosu::KB_RIGHT_SHIFT) && !@player.onBicycle
-                  @player.playRunningDown
-                elsif @player.onBicycle
-                  @player.playCyclingDown
-                else
-                  @player.playMovingDown
-                end
-                if @player.movingOneStep
-                  @bumpSound.play
-                end
+                @player.moveDown
+              end
+              @player.y -= @squareSize
+              if nextSquare.class == Grass
+                @grassSound.play
+              end
+            else
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+                @player.playRunningDown
+              elsif @player.onBicycle
+                @player.playCyclingDown
+              else
+                @player.playMovingDown
+              end
+              if @player.movingOneStep
+                @bumpSound.play
               end
             end
           end
         else
-          if (Time.now.to_f-@inputLeftTime.to_f) > @player.delayBeforeMoving
-            @inputLeftTime = Time.now
+          if (Time.now.to_f-Input.lastPressedTime(Key::KeyboardLeft).to_f) > @player.delayBeforeMoving
+            Input.resetTime(Key::KeyboardLeft)
           end
-          if (Time.now.to_f-@inputRightTime.to_f) > @player.delayBeforeMoving
-            @inputRightTime = Time.now
+          if (Time.now.to_f-Input.lastPressedTime(Key::KeyboardRight).to_f) > @player.delayBeforeMoving
+            Input.resetTime(Key::KeyboardRight)
           end
-          if (Time.now.to_f-@inputUpTime.to_f) > @player.delayBeforeMoving
-            @inputUpTime = Time.now
+          if (Time.now.to_f-Input.lastPressedTime(Key::KeyboardUp).to_f) > @player.delayBeforeMoving
+            Input.resetTime(Key::KeyboardUp)
           end
-          if (Time.now.to_f-@inputDownTime.to_f) > @player.delayBeforeMoving
-            @inputDownTime = Time.now
+          if (Time.now.to_f-Input.lastPressedTime(Key::KeyboardDown).to_f) > @player.delayBeforeMoving
+            Input.resetTime(Key::KeyboardDown)
           end
 
           @player.realX = @player.x+@squareSize/2-@player.sprite.width/2

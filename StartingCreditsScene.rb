@@ -1,6 +1,7 @@
 class StartingCreditsScene < GameScene
 
     def initialize
+        super
         @creditsVisible = false
         @startGameFreakScreen = false
         @gameFreakScreenVisible = false

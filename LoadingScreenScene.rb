@@ -1,6 +1,7 @@
 class LoadingScreenScene < GameScene
 
     def initialize
+        super
         @flatPokeBallAngle = 0
 
         @background = Sprite.new("Graphics/LoadingScreenBackground.png")
