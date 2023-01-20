@@ -422,7 +422,7 @@ end
 class MapTest < GameMapScene
 
   def initialize(name,panelNumber,playerX,playerY,playerZ)
-    super(name,panelNumber,playerX,playerY,playerZ,9*32,9*32)#,"Test.wav")
+    super(name,panelNumber,playerX,playerY,playerZ,9*32,9*32,"Test.wav")
 
     @objects = [Road.new(0,0,0),
                 Road.new(64,0,0),
