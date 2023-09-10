@@ -50,9 +50,9 @@ class StartingCreditsScene < GameScene
             end
             if @gameFreakScreenVisible && @gameFreakSpriteAlpha <= 0
                 @gameFreakSprite = nil
-                #$gameWindow.currentGameScene = TitleScreen.new
-                #$gameWindow.currentGameScene = LoadingScreen.new
-                $gameWindow.currentGameScene = MapTest.new("Carte de test",0,0,0,0)
+                #$gameWindow.currentGameScene = TitleScreenScene.new
+                $gameWindow.currentGameScene = LoadingScreenScene.new
+                #$gameWindow.currentGameScene = MapTest.new("Carte de test",0,0,0,0)
             end
             if !@gameFreakScreenVisible
                 @gameFreakSpriteAlpha += @gameFreakSpeed

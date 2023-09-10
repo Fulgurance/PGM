@@ -402,6 +402,45 @@ class Building < GameMapObject
 
 end
 
+class Tree < GameMapObject
+
+  def initialize(x,y,z)
+      super(x,y,z)
+      self.leftPassable = false
+      self.rightPassable = false
+      self.upPassable = false
+      self.downPassable = false
+      @texture = Sprite.new('Tree.png', retro: true)
+  end
+
+  def draw
+    GL.BindTexture(GL::TEXTURE_2D, @texture.gl_tex_info.tex_name)
+    GL.Enable(GL::ALPHA_TEST)
+    GL.AlphaFunc(GL::GREATER,0)
+
+    GL.PushMatrix
+      GL.Scalef(1,1,1)
+
+      GL.Begin(GL::QUADS)
+        GL.TexCoord2d(@texture.gl_tex_info.left,@texture.gl_tex_info.bottom)
+        GL.Vertex3f(@x+16-@texture.width/2, @y+16, @z)
+
+        GL.TexCoord2d(@texture.gl_tex_info.right,@texture.gl_tex_info.bottom)
+        GL.Vertex3f(@x+16+@texture.width/2, @y+16, @z)
+
+        GL.TexCoord2d(@texture.gl_tex_info.right,@texture.gl_tex_info.top)
+        GL.Vertex3f(@x+16+@texture.width/2, @y+16, @z+@texture.height)
+
+        GL.TexCoord2d(@texture.gl_tex_info.left,@texture.gl_tex_info.top)
+        GL.Vertex3f(@x+16-@texture.width/2, @y+16, @z+@texture.height)
+      GL.End
+
+      GL.Disable(GL::ALPHA_TEST)
+    GL.PopMatrix
+  end
+
+end
+
 class Event1 < GameMapEvent
 
   def initialize(spriteName,x,y,z)
@@ -410,11 +449,27 @@ class Event1 < GameMapEvent
     self.rightPassable = false
     self.upPassable = false
     self.downPassable = false
-    @f = false
   end
 
   def update
     super
+    #64,32,0
+    if self.realY == 0 && self.realX >= 64 && self.realX <= 96
+      self.moveRight
+    end
+
+    if self.realY == 32 && self.realX <= 96 && self.realX > 64
+      self.moveLeft
+    end
+
+    if self.realX == 32 && self.realY >= 0 && self.realY <= 32
+      self.moveUp
+    end
+
+    if self.realX == 64 && self.realY <= 32 && self.realY > 0
+      self.moveDown
+    end
+
   end
 
 end
@@ -451,7 +506,23 @@ class MapTest < GameMapScene
                 Water.new(222,160,0),
                 Water.new(254,160,0),
                 Building.new(64,64,0),
-                Panel.new(32,32,0)]
+                Panel.new(32,32,0),
+                Tree.new(0,128,0),
+                Tree.new(0,160,0),
+                Tree.new(0,192,0),
+                Tree.new(0,224,0),
+                Tree.new(32,224,0),
+                Tree.new(64,260,0),
+                Tree.new(32,260,0),
+                Tree.new(0,260,0),
+                Tree.new(96,260,0),
+                Tree.new(128,260,0),
+                Tree.new(160,260,0),
+                Tree.new(192,260,0),
+                Tree.new(224,260,0),
+                Tree.new(260,260,0),
+                Tree.new(260,224,0),
+                Tree.new(260,192,0)]
     @events = [Event1.new("BoyHero",64,32,0)]
   end
 

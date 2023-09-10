@@ -97,6 +97,10 @@ class GameMapMovableObject < GameMapObject
         playMovingDown
     end
 
+    def moving
+        return @movingLeft || @moveRight || @movingUp || @movingDown
+    end
+
     def playMovingLeft
         if @movingFrame == 0
             @sprite.insert("Graphics/Characters/#{@spriteName}/MoveLeft1.png",0,0)

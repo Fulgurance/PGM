@@ -3,17 +3,26 @@ class GameMapPlayer < GameMapMovableObject
     attr_accessor :animationRunningSpeed
     attr_accessor :animationCyclingSpeed
     attr_accessor :onBicycle
+    attr_accessor :surfing
+    attr_accessor :surfingOriginRealZ
 
     def initialize(spriteName,x,y,z,sizeX=32,sizeY=0,sizeZ=64,direction=3)
         super(spriteName,x,y,z,sizeX,sizeY,sizeZ,direction=3)
         @runningSpeed = 2.3
         @cyclingSpeed = 3.6
+        @surfingSpeed = 3.0
         @animationRunningSpeed = 0.15
         @animationCyclingSpeed = 0.1
+        @animationSurfingSpeed = 0.15
         @onBicycle = false
+        @surfing = false
+        @surfingReverseAnimation = false
+        @surfingAnimationTime = Time.now
     end
 
     def update
+        square = currentSquare
+
         self.movingFrame += 1
         if self.movingFrame == 2
             self.movingOneStep = true
@@ -23,6 +32,38 @@ class GameMapPlayer < GameMapMovableObject
             self.movingOneStep = true
         end
         self.movementAnimationTime = Time.now
+
+        if self.currentSquare.class == Water
+            if @surfing == false
+                @surfingOriginRealZ = @realZ
+            end
+
+            @onBicycle = false
+            @surfing = true
+
+            if (Time.now.to_f-@surfingAnimationTime.to_f) > @animationSurfingSpeed
+
+                if !@surfingReverseAnimation
+                    @realZ -= 1
+                else
+                    @realZ += 1
+                end
+
+                if (square.z+square.sizeZ - @realZ) >= 3
+                    @surfingReverseAnimation = true
+                end
+
+                if (square.z+square.sizeZ - @realZ) <= 0
+                    @surfingReverseAnimation = false
+                end
+
+                @surfingAnimationTime = Time.now
+            end
+
+        else
+            @surfing = false
+            @realZ = square.z+square.sizeZ
+        end
     end
 
 
@@ -44,6 +85,26 @@ class GameMapPlayer < GameMapMovableObject
     def lookOnBicycleDown
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/OnBicycleDown.png",0,0)
+    end
+
+    def lookSurfingLeft
+        @movingFrame = 0
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingLeft.png",0,0)
+    end
+
+    def lookSurfingRight
+        @movingFrame = 0
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingRight.png",0,0)
+    end
+
+    def lookSurfingUp
+        @movingFrame = 0
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingUp.png",0,0)
+    end
+
+    def lookSurfingDown
+        @movingFrame = 0
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingDown.png",0,0)
     end
 
     def runLeft
@@ -72,6 +133,58 @@ class GameMapPlayer < GameMapMovableObject
         @currentMovementDistance += @runningSpeed
         @realY -= @runningSpeed
         playRunningDown
+    end
+
+    def surfLeft
+        @movingLeft = true
+        @currentMovementDistance += @surfingSpeed
+        @realX -= @surfingSpeed
+        playSurfingLeft
+    end
+
+    def surfRight
+        @movingRight = true
+        @currentMovementDistance += @surfingSpeed
+        @realX += @surfingSpeed
+        playSurfingRight
+    end
+
+    def surfUp
+        @movingUp = true
+        @currentMovementDistance += @surfingSpeed
+        @realY += @surfingSpeed
+        playSurfingUp
+    end
+
+    def surfDown
+        @movingDown = true
+        @currentMovementDistance += @surfingSpeed
+        @realY -= @surfingSpeed
+        playSurfingDown
+    end
+
+    def playSurfing
+        #TO DO
+    end
+
+    def playSurfingLeft
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingLeft.png",0,0)
+        playSurfing
+    end
+
+    def playSurfingRight
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingRight.png",0,0)
+        playSurfing
+    end
+
+    def playSurfingUp
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingUp.png",0,0)
+        playSurfing
+    end
+
+    def playSurfingDown
+        @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingDown.png",0,0)
+        playSurfing
     end
 
     def playRunningLeft

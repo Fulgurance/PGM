@@ -10,10 +10,36 @@ class GameMapEvent < GameMapMovableObject
         @currentMovementDistance = 0
         @movingFrame = 0
         @delayBeforeMoving = 0.3
+        @previousRealX = @realX
+        @previousRealY = @realY
     end
 
     def update
         super
+
+        @x = (@realX/32).round * 32
+        @y = (@realY/32).round * 32
+        @z = (@realZ/32).round * 32
+
+        if !@moving
+            @realX = @x
+            @realY = @y
+            @realZ = @z
+        end
+
+        if @previousRealX == @realX
+            @movingLeft = false
+            @movingRight = false
+        end
+
+        if @previousRealY == @realY
+            @movingUp = false
+            @movingDown = false
+        end
+
+        @previousRealX = @realX
+        @previousRealY = @realY
+        @previousRealZ = @realZ
     end
 
 end

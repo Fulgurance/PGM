@@ -4,11 +4,15 @@ class GameMapScene < GameScene3D
   attr_accessor :objects
   attr_accessor :events
   attr_accessor :standby
+  attr_accessor :allowRunning
+  attr_accessor :allowBicycle
 
   def initialize(name,panelNumber,playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
     super()
     @name = name
     @panelNumber = panelNumber
+    @allowRunning = true
+    @allowBicycle = true
     @mapX = 0.0
     @mapY = 0.0
     @mapZ = 0.0
@@ -43,6 +47,7 @@ class GameMapScene < GameScene3D
     @grassSound = Sound.new("Audios/Sounds/Grass.wav")
     @bicycleSound = Sound.new("Audios/Sounds/Bicycle.wav")
     @bicycleMusic = Music.new("Audios/Musics/Bicycle.wav")
+    @surfingMusic = Music.new("Audios/Musics/Surfing.wav")
     if backgroundMusic != nil
       @backgroundMusic = Gosu::Song.new(backgroundMusic)
       @backgroundMusic.play(true)
@@ -112,9 +117,25 @@ class GameMapScene < GameScene3D
   end
 
   def update
+    if @player.surfing
+      @bicycleMusic.stop
+      if @backgroundMusic != nil
+        @backgroundMusic.stop
+      end
+      @surfingMusic.play(true)
+    else
+      @surfingMusic.stop
+      if @player.onBicycle
+        @bicycleMusic.play(true)
+      else
+        if @backgroundMusic != nil
+          @backgroundMusic.play(true)
+        end
+      end
+    end
+
     updateObjects
     updateEvents
-    updatePlayer
     updateCamera
     updateInputs
   end
@@ -131,11 +152,6 @@ class GameMapScene < GameScene3D
     end
   end
 
-  def updatePlayer
-    square = @player.currentSquare
-    @player.realZ = square.z+square.sizeZ
-  end
-
   def updateCamera
     @cameraX = @player.realX+@squareSize/2
     @cameraY = @angleY + @player.realY+@squareSize
@@ -146,6 +162,7 @@ class GameMapScene < GameScene3D
   end
 
   def updateInputs
+
     if Input.keepPressed(Key::KeyboardEscape) && !@standby && @player.currentMovementDistance == 0
       @panelText = nil
       @panelSprite = nil
@@ -156,7 +173,7 @@ class GameMapScene < GameScene3D
 
     if !@standby
       @menu = nil
-      if Input.pressed(Key::KeyboardRightControl) && (Time.now.to_f-Input.lastPressedTime(Key::KeyboardRightControl).to_f) > @delayBeforeNextInput
+      if !@player.surfing && @allowBicycle && Input.pressed(Key::KeyboardRightControl) && (Time.now.to_f-Input.lastPressedTime(Key::KeyboardRightControl).to_f) > @delayBeforeNextInput
         if !@player.onBicycle
           if @backgroundMusic != nil
             @backgroundMusic.stop
@@ -174,7 +191,7 @@ class GameMapScene < GameScene3D
         Input.resetTime(Key::KeyboardRightControl)
       end
 
-      if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+      if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
         if (Time.now.to_f-@player.movementAnimationTime.to_f) > @player.animationRunningSpeed
           @player.update
         else
@@ -195,36 +212,52 @@ class GameMapScene < GameScene3D
       end
 
       if @player.movingLeft && @player.currentMovementDistance < @squareSize
-        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
           @player.runLeft
         elsif @player.onBicycle
           @player.cyclingLeft
         else
-          @player.moveLeft
+          if @player.surfing
+            @player.surfLeft
+          else
+            @player.moveLeft
+          end
         end
       elsif @player.movingRight && @player.currentMovementDistance < @squareSize
-        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
           @player.runRight
         elsif @player.onBicycle
           @player.cyclingRight
         else
-          @player.moveRight
+          if @player.surfing
+            @player.surfRight
+          else
+            @player.moveRight
+          end
         end
       elsif @player.movingUp && @player.currentMovementDistance < @squareSize
-        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
           @player.runUp
         elsif @player.onBicycle
           @player.cyclingUp
         else
-          @player.moveUp
+          if @player.surfing
+            @player.surfUp
+          else
+            @player.moveUp
+          end
         end
       elsif @player.movingDown && @player.currentMovementDistance < @squareSize
-        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+        if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
           @player.runDown
         elsif @player.onBicycle
           @player.cyclingDown
         else
-          @player.moveDown
+          if @player.surfing
+            @player.surfDown
+          else
+            @player.moveDown
+          end
         end
       else
         @player.currentMovementDistance = 0
@@ -242,24 +275,32 @@ class GameMapScene < GameScene3D
           if Input.keepPressed(Key::KeyboardLeft,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(0)
             if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && square.leftPassable
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runLeft
               elsif @player.onBicycle
                 @player.cyclingLeft
               else
-                @player.moveLeft
+                if @player.surfing
+                  @player.surfLeft
+                else
+                  @player.moveLeft
+                end
               end
               @player.x -= @squareSize
               if nextSquare.class == Grass
                 @grassSound.play
               end
             else
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.playRunningLeft
               elsif @player.onBicycle
                 @player.playCyclingLeft
               else
-                @player.playMovingLeft
+                if @player.surfing
+                  @player.playSurfingLeft
+                else
+                  @player.playMovingLeft
+                end
               end
               if @player.movingOneStep
                 @bumpSound.play
@@ -271,24 +312,32 @@ class GameMapScene < GameScene3D
           if Input.keepPressed(Key::KeyboardRight,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(1)
             if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && square.rightPassable
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runRight
               elsif @player.onBicycle
                 @player.cyclingRight
               else
-                @player.moveRight
+                if @player.surfing
+                  @player.surfRight
+                else
+                  @player.moveRight
+                end
               end
               @player.x += @squareSize
               if nextSquare.class == Grass
                 @grassSound.play
               end
             else
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.playRunningRight
               elsif @player.onBicycle
                 @player.playCyclingRight
               else
-                @player.playMovingRight
+                if @player.surfing
+                  @player.playSurfingRight
+                else
+                  @player.playMovingRight
+                end
               end
               if @player.movingOneStep
                 @bumpSound.play
@@ -300,24 +349,32 @@ class GameMapScene < GameScene3D
           if Input.keepPressed(Key::KeyboardUp,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(2)
             if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare.downPassable && square.upPassable
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runUp
               elsif @player.onBicycle
                 @player.cyclingUp
               else
-                @player.moveUp
+                if @player.surfing
+                  @player.surfUp
+                else
+                  @player.moveUp
+                end
               end
               @player.y += @squareSize
               if nextSquare.class == Grass
                 @grassSound.play
               end
             else
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.playRunningUp
               elsif @player.onBicycle
                 @player.playCyclingUp
               else
-                @player.playMovingUp
+                if @player.surfing
+                  @player.playSurfingUp
+                else
+                  @player.playMovingUp
+                end
               end
               if @player.movingOneStep
                 @bumpSound.play
@@ -329,24 +386,32 @@ class GameMapScene < GameScene3D
           if Input.keepPressed(Key::KeyboardDown,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(3)
             if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && square.downPassable
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runDown
               elsif @player.onBicycle
                 @player.cyclingDown
               else
-                @player.moveDown
+                if @player.surfing
+                  @player.surfDown
+                else
+                  @player.moveDown
+                end
               end
               @player.y -= @squareSize
               if nextSquare.class == Grass
                 @grassSound.play
               end
             else
-              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle
+              if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.playRunningDown
               elsif @player.onBicycle
                 @player.playCyclingDown
               else
-                @player.playMovingDown
+                if @player.surfing
+                  @player.playSurfingDown
+                else
+                  @player.playMovingDown
+                end
               end
               if @player.movingOneStep
                 @bumpSound.play
@@ -374,24 +439,32 @@ class GameMapScene < GameScene3D
           when 0
             if @player.onBicycle
               @player.lookOnBicycleLeft
+            elsif @player.surfing
+              @player.lookSurfingLeft
             else
               @player.lookLeft
             end
           when 1
             if @player.onBicycle
               @player.lookOnBicycleRight
+            elsif @player.surfing
+              @player.lookSurfingRight
             else
               @player.lookRight
             end
           when 2
             if @player.onBicycle
               @player.lookOnBicycleUp
+            elsif @player.surfing
+              @player.lookSurfingUp
             else
               @player.lookUp
             end
           when 3
             if @player.onBicycle
               @player.lookOnBicycleDown
+            elsif @player.surfing
+              @player.lookSurfingDown
             else
               @player.lookDown
             end

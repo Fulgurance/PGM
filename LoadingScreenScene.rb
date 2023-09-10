@@ -4,8 +4,8 @@ class LoadingScreenScene < GameScene
         super
         @flatPokeBallAngle = 0
 
-        @background = Sprite.new("Graphics/LoadingScreenBackground.png")
-        @flatPokeBall = Sprite.new("Graphics/FlatPokeBall.png")
+        @background = Sprite.new("Graphics/LoadingScreen/LoadingScreenBackground.png")
+        @flatPokeBall = Sprite.new("Graphics/LoadingScreen/FlatPokeBall.png")
     end
 
     def update
@@ -17,7 +17,7 @@ class LoadingScreenScene < GameScene
     end
 
     def draw
-        @background.draw(0,0,0)
+        @background.draw#(0,0,0)
         @flatPokeBall.draw_rot(0,$gameWindow.height/2,1,@flatPokeBallAngle)
     end
 
