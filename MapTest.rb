@@ -306,10 +306,10 @@ class Building < GameMapObject
       self.sizeX = 128
       self.sizeY = 128
       self.sizeZ = 96
-      self.leftPassable = true
-      self.rightPassable = true
-      self.upPassable = true
-      self.downPassable = true
+      #self.leftPassable = true
+      #self.rightPassable = true
+      #self.upPassable = true
+      #self.downPassable = true
       @texture1 = Sprite.new('Test.png', retro: true)
       @texture2 = Sprite.new('Test2.png', retro: true)
   end
@@ -454,20 +454,23 @@ class Event1 < GameMapEvent
   def update
     super
     #64,32,0
-    if self.realY == 0 && self.realX >= 64 && self.realX <= 96
-      self.moveRight
+
+    #
+    if self.realY == 0 && self.realX >= 64 && self.realX < 96
+      moveRight
     end
 
     if self.realY == 32 && self.realX <= 96 && self.realX > 64
-      self.moveLeft
+      moveLeft
     end
 
-    if self.realX == 32 && self.realY >= 0 && self.realY <= 32
-      self.moveUp
+    if self.realX == 96 && self.realY >= 0 && self.realY < 32
+      moveUp
     end
 
+    #
     if self.realX == 64 && self.realY <= 32 && self.realY > 0
-      self.moveDown
+      moveDown
     end
 
   end
@@ -506,7 +509,7 @@ class MapTest < GameMapScene
                 Water.new(222,160,0),
                 Water.new(254,160,0),
                 Building.new(64,64,0),
-                Panel.new(32,32,0),
+                Panel.new(0,32,0),
                 Tree.new(0,128,0),
                 Tree.new(0,160,0),
                 Tree.new(0,192,0),

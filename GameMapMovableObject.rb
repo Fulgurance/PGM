@@ -34,6 +34,8 @@ class GameMapMovableObject < GameMapObject
     end
 
     def update
+        super
+
         if (Time.now.to_f-@movementAnimationTime.to_f) > @animationSpeed
             @movingFrame += 1
             if @movingFrame == 2
@@ -47,6 +49,26 @@ class GameMapMovableObject < GameMapObject
         else
             @movingOneStep = false
         end
+
+        @x = (@realX/32).round * 32
+        @y = (@realY/32).round * 32
+        @z = (@realZ/32).round * 32
+
+        if @previousRealX == @realX
+            @movingLeft = false
+            @movingRight = false
+            @realX = @x
+        end
+
+        if @previousRealY == @realY
+            @movingUp = false
+            @movingDown = false
+            @realY = @y
+        end
+
+        @previousRealX = @realX
+        @previousRealY = @realY
+        @previousRealZ = @realZ
     end
 
     def lookLeft
@@ -160,24 +182,32 @@ class GameMapMovableObject < GameMapObject
     end
 
     def nextSquare(direction)
-        result = 0
-        ($gameWindow.currentGameScene.objects+$gameWindow.currentGameScene.events).each do |object|
+        result = GameMapObject.new(0,0,0)
+        ($gameWindow.currentGameScene.objects+$gameWindow.currentGameScene.events+[$gameWindow.currentGameScene.player]).each do |object|
             case direction
             when 0
                 if (self.x-$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.x-$gameWindow.currentGameScene.squareSize) >= object.x && (self.y) >= object.y && (self.y) < object.y+object.sizeY
-                result = object
+                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
+                        result = object
+                    end
                 end
             when 1
                 if (self.x+$gameWindow.currentGameScene.squareSize) >= object.x && (self.x+$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.y) >= object.y && (self.y) < object.y+object.sizeY
-                result = object
+                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
+                        result = object
+                    end
                 end
             when 2
                 if (self.y+$gameWindow.currentGameScene.squareSize) >= object.y && (self.y+$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.x) >= object.x && (self.x) < object.x+object.sizeX
-                result = object
+                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
+                        result = object
+                    end
                 end
             when 3
                 if (self.y-$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.y-$gameWindow.currentGameScene.squareSize) >= object.y  && (self.x) >= object.x && (self.x) < object.x+object.sizeX
-                result = object
+                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
+                        result = object
+                    end
                 end
             end
         end

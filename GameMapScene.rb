@@ -6,6 +6,7 @@ class GameMapScene < GameScene3D
   attr_accessor :standby
   attr_accessor :allowRunning
   attr_accessor :allowBicycle
+  attr_accessor :player
 
   def initialize(name,panelNumber,playerX,playerY,playerZ,mapWidth=32,mapHeight=32,backgroundMusic=nil)
     super()
@@ -118,6 +119,7 @@ class GameMapScene < GameScene3D
 
   def update
     if @player.surfing
+      @player.update
       @bicycleMusic.stop
       if @backgroundMusic != nil
         @backgroundMusic.stop

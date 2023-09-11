@@ -14,32 +14,10 @@ class GameMapEvent < GameMapMovableObject
         @previousRealY = @realY
     end
 
-    def update
-        super
-
-        @x = (@realX/32).round * 32
-        @y = (@realY/32).round * 32
-        @z = (@realZ/32).round * 32
-
-        if !@moving
-            @realX = @x
-            @realY = @y
-            @realZ = @z
+    def moveLeft
+        if !nextSquare(0).kind_of?(GameMapEvent) && !nextSquare(0).kind_of?(GameMapPlayer)
+            super
         end
-
-        if @previousRealX == @realX
-            @movingLeft = false
-            @movingRight = false
-        end
-
-        if @previousRealY == @realY
-            @movingUp = false
-            @movingDown = false
-        end
-
-        @previousRealX = @realX
-        @previousRealY = @realY
-        @previousRealZ = @realZ
     end
 
 end
