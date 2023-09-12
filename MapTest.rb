@@ -530,7 +530,7 @@ class MapTest < GameMapScene
 
     if Input.keepPressed(Key::KeyboardReturn) && !@standby && @player.currentMovementDistance == 0 && @player.x == 0 && @player.y == 0 && @player.lookingUp
       @standby = true
-      @message = GameMessageScene.new("Salut!")
+      @message = GameMessageScene.new("Salut!",0)
     end
 
     def drawGraphics
