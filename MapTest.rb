@@ -306,10 +306,6 @@ class Building < GameMapObject
       self.sizeX = 128
       self.sizeY = 128
       self.sizeZ = 96
-      #self.leftPassable = true
-      #self.rightPassable = true
-      #self.upPassable = true
-      #self.downPassable = true
       @texture1 = Sprite.new('Test.png', retro: true)
       @texture2 = Sprite.new('Test2.png', retro: true)
   end
@@ -527,6 +523,32 @@ class MapTest < GameMapScene
                 Tree.new(260,224,0),
                 Tree.new(260,192,0)]
     @events = [Event1.new("BoyHero",64,32,0)]
+  end
+
+  def updateInputs
+    super
+
+    if Input.keepPressed(Key::KeyboardReturn) && !@standby && @player.currentMovementDistance == 0 && @player.x == 0 && @player.y == 0 && @player.lookingUp
+      @standby = true
+      @message = GameMessageScene.new("Salut!")
+    end
+
+    def drawGraphics
+      super
+
+      @message.draw if @message != nil
+    end
+
+    def update
+      super
+
+      if @standby
+        @message.update if @message != nil
+      else
+        @message = nil
+      end
+    end
+
   end
 
 end

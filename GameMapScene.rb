@@ -474,7 +474,7 @@ class GameMapScene < GameScene3D
         end
       end
     else
-      @menu.update
+      @menu.update if @menu != nil
     end
   end
 
