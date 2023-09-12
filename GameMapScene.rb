@@ -276,7 +276,7 @@ class GameMapScene < GameScene3D
           @player.direction = 0
           if Input.keepPressed(Key::KeyboardLeft,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(0)
-            if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && square.leftPassable
+            if (@player.x-@squareSize) >= @mapX && nextSquare.rightPassable && square.leftPassable && !@player.nextEntity(0).is_a?(GameMapEvent)
               if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runLeft
               elsif @player.onBicycle
@@ -313,7 +313,7 @@ class GameMapScene < GameScene3D
           @player.direction = 1
           if Input.keepPressed(Key::KeyboardRight,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(1)
-            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && square.rightPassable
+            if (@player.x+@squareSize) < (@mapX+@mapWidth) && nextSquare.leftPassable && square.rightPassable && !@player.nextEntity(1).is_a?(GameMapEvent)
               if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runRight
               elsif @player.onBicycle
@@ -350,7 +350,7 @@ class GameMapScene < GameScene3D
           @player.direction = 2
           if Input.keepPressed(Key::KeyboardUp,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(2)
-            if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare.downPassable && square.upPassable
+            if (@player.y+@squareSize) < (@mapY+@mapHeight) && nextSquare.downPassable && square.upPassable && !@player.nextEntity(2).is_a?(GameMapEvent)
               if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runUp
               elsif @player.onBicycle
@@ -387,7 +387,7 @@ class GameMapScene < GameScene3D
           @player.direction = 3
           if Input.keepPressed(Key::KeyboardDown,@player.delayBeforeMoving)
             nextSquare = @player.nextSquare(3)
-            if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && square.downPassable
+            if (@player.y-@squareSize) >= @mapY && nextSquare.upPassable && square.downPassable && !@player.nextEntity(3).is_a?(GameMapEvent)
               if Input.pressed(Key::KeyboardRightShift) && !@player.onBicycle && @allowRunning && !@player.surfing
                 @player.runDown
               elsif @player.onBicycle

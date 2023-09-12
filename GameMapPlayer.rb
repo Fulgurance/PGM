@@ -163,28 +163,20 @@ class GameMapPlayer < GameMapMovableObject
         playSurfingDown
     end
 
-    def playSurfing
-        #TO DO
-    end
-
     def playSurfingLeft
         @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingLeft.png",0,0)
-        playSurfing
     end
 
     def playSurfingRight
         @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingRight.png",0,0)
-        playSurfing
     end
 
     def playSurfingUp
         @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingUp.png",0,0)
-        playSurfing
     end
 
     def playSurfingDown
         @sprite.insert("Graphics/Characters/#{@spriteName}/SurfingDown.png",0,0)
-        playSurfing
     end
 
     def playRunningLeft

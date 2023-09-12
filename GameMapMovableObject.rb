@@ -6,6 +6,10 @@ class GameMapMovableObject < GameMapObject
     attr_accessor :speed
     attr_accessor :animationSpeed
     attr_accessor :currentMovementDistance
+    attr_accessor :lookingLeft
+    attr_accessor :lookingRight
+    attr_accessor :lookingUp
+    attr_accessor :lookingDown
     attr_accessor :movingOneStep
     attr_accessor :movingFrame
     attr_accessor :movingLeft
@@ -23,6 +27,10 @@ class GameMapMovableObject < GameMapObject
         @speed = 1.3
         @animationSpeed = 0.2
         @currentMovementDistance = 0
+        @lookingLeft = false
+        @lookingRight = false
+        @lookingUp = false
+        @lookingDown = false
         @movingOneStep = false
         @movingLeft = false
         @movingRight = false
@@ -31,6 +39,8 @@ class GameMapMovableObject < GameMapObject
         @movingFrame = 0
         @delayBeforeMoving = 0.3
         @movementAnimationTime = Time.now
+        @previousRealX = @realX
+        @previousRealY = @realY
     end
 
     def update
@@ -72,21 +82,37 @@ class GameMapMovableObject < GameMapObject
     end
 
     def lookLeft
+        @lookingLeft = true
+        @lookingRight = false
+        @lookingUp = false
+        @lookingDown = false
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/Left.png",0,0)
     end
 
     def lookRight
+        @lookingLeft = false
+        @lookingRight = true
+        @lookingUp = false
+        @lookingDown = false
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/Right.png",0,0)
     end
 
     def lookUp
+        @lookingLeft = false
+        @lookingRight = false
+        @lookingUp = true
+        @lookingDown = false
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/Up.png",0,0)
     end
 
     def lookDown
+        @lookingLeft = false
+        @lookingRight = false
+        @lookingUp = false
+        @lookingDown = true
         @movingFrame = 0
         @sprite.insert("Graphics/Characters/#{@spriteName}/Down.png",0,0)
     end
@@ -172,45 +198,68 @@ class GameMapMovableObject < GameMapObject
     end
 
     def currentSquare
-        result = 0
+        result = GameMapObject.new(0,0,0)
+
         $gameWindow.currentGameScene.objects.each do |object|
             if self.x < object.x+object.sizeX && self.x >= object.x && self.y < object.y+object.sizeY && self.y >= object.y
                 result = object
             end
         end
+
         return result
     end
 
     def nextSquare(direction)
         result = GameMapObject.new(0,0,0)
-        ($gameWindow.currentGameScene.objects+$gameWindow.currentGameScene.events+[$gameWindow.currentGameScene.player]).each do |object|
+
+        $gameWindow.currentGameScene.objects.each do |object|
             case direction
             when 0
-                if (self.x-$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.x-$gameWindow.currentGameScene.squareSize) >= object.x && (self.y) >= object.y && (self.y) < object.y+object.sizeY
-                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
-                        result = object
-                    end
+                if  (self.x-$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.x-$gameWindow.currentGameScene.squareSize) >= object.x && self.y >= object.y && self.y < object.y+object.sizeY
+                    result = object
                 end
             when 1
-                if (self.x+$gameWindow.currentGameScene.squareSize) >= object.x && (self.x+$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && (self.y) >= object.y && (self.y) < object.y+object.sizeY
-                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
-                        result = object
-                    end
+                if (self.x+$gameWindow.currentGameScene.squareSize) >= object.x && (self.x+$gameWindow.currentGameScene.squareSize) < object.x+object.sizeX && self.y >= object.y && self.y < object.y+object.sizeY
+                    result = object
                 end
             when 2
-                if (self.y+$gameWindow.currentGameScene.squareSize) >= object.y && (self.y+$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.x) >= object.x && (self.x) < object.x+object.sizeX
-                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
-                        result = object
-                    end
+                if (self.y+$gameWindow.currentGameScene.squareSize) >= object.y && (self.y+$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && self.x >= object.x && self.x < object.x+object.sizeX
+                    result = object
                 end
             when 3
-                if (self.y-$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.y-$gameWindow.currentGameScene.squareSize) >= object.y  && (self.x) >= object.x && (self.x) < object.x+object.sizeX
-                    if !result.instance_of?(GameMapEvent) && !result.instance_of?(GameMapPlayer)
-                        result = object
-                    end
+                if (self.y-$gameWindow.currentGameScene.squareSize) < object.y+object.sizeY && (self.y-$gameWindow.currentGameScene.squareSize) >= object.y  && self.x >= object.x && self.x < object.x+object.sizeX
+                    result = object
                 end
             end
         end
+
+        return result
+    end
+
+    def nextEntity(direction)
+        result = GameMapMovableObject.new("BoyHero",0,0,0)
+
+        ($gameWindow.currentGameScene.events+[$gameWindow.currentGameScene.player]).each do |object|
+            case direction
+            when 0
+                if  (self.x-$gameWindow.currentGameScene.squareSize) == object.x && self.y == object.y
+                    result = object
+                end
+            when 1
+                if (self.x+$gameWindow.currentGameScene.squareSize) == object.x && self.y == object.y
+                    result = object
+                end
+            when 2
+                if (self.y+$gameWindow.currentGameScene.squareSize) == object.y && self.x == object.x
+                    result = object
+                end
+            when 3
+                if (self.y-$gameWindow.currentGameScene.squareSize) == object.y && self.x == object.x
+                    result = object
+                end
+            end
+        end
+
         return result
     end
 

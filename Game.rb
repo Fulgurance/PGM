@@ -26,6 +26,6 @@ require './LoadingScreenScene'
 require './MapTest'
 
 $gameWindow = GameWindow.new("PGM",940,528)
-$gameWindow.currentGameScene = MapTest.new("Carte de test",0,0,0,0)
+$gameWindow.currentGameScene = MapTest.new("Carte de test",0,64,32,0)
 #$gameWindow.currentGameScene = StartingCreditsScene.new
 $gameWindow.show
