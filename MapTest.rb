@@ -308,6 +308,11 @@ class Building < GameMapObject
       self.sizeZ = 96
       @texture1 = Sprite.new('Test.png', retro: true)
       @texture2 = Sprite.new('Test2.png', retro: true)
+
+      self.leftPassable = true
+    self.rightPassable = true
+    self.upPassable = true
+    self.downPassable = true
   end
 
   def draw
@@ -476,7 +481,7 @@ end
 class MapTest < GameMapScene
 
   def initialize(name,panelNumber,playerX,playerY,playerZ)
-    super(name,panelNumber,playerX,playerY,playerZ,9*32,9*32,"Test.wav")
+    super(name,panelNumber,playerX,playerY,playerZ,12*32,9*32,"Test.wav")
 
     @objects = [Road.new(0,0,0),
                 Road.new(64,0,0),
@@ -504,6 +509,17 @@ class MapTest < GameMapScene
                 Water.new(192,160,0),
                 Water.new(222,160,0),
                 Water.new(254,160,0),
+
+                Water.new(286,96,0),
+                Water.new(318,96,12),
+                Water.new(350,96,24),
+                Water.new(286,128,0),
+                Water.new(318,128,12),
+                Water.new(350,128,24),
+                Water.new(286,160,0),
+                Water.new(318,160,12),
+                Water.new(350,160,24),
+
                 Building.new(64,64,0),
                 Panel.new(0,32,0),
                 Tree.new(0,128,0),

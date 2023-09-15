@@ -41,6 +41,15 @@ class GameMapPlayer < GameMapMovableObject
             @onBicycle = false
             @surfing = true
 
+            #TEMPORARY CORRECTION FOR WATER WITH DIFFERENT Z
+            if (square.z - @realZ) >= 4
+                @realZ += square.z - @realZ
+            end
+
+            if (@realZ - square.z) >= 4
+                @realZ -= @realZ - square.z
+            end
+
             if (Time.now.to_f-@surfingAnimationTime.to_f) > @animationSurfingSpeed
 
                 if !@surfingReverseAnimation
