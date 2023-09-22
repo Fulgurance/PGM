@@ -481,7 +481,7 @@ end
 class MapTest < GameMapScene
 
   def initialize(name,panelNumber,playerX,playerY,playerZ)
-    super(name,panelNumber,playerX,playerY,playerZ,12*32,9*32,"Test.wav")
+    super(name,panelNumber,playerX,playerY,playerZ,20*32,20*32,"Test.wav")
 
     @objects = [Road.new(0,0,0),
                 Road.new(64,0,0),
@@ -510,15 +510,55 @@ class MapTest < GameMapScene
                 Water.new(222,160,0),
                 Water.new(254,160,0),
 
+                Water.new(286,0,0),
+                Water.new(318,0,0),
+                Water.new(350,0,0),
+                Water.new(286,32,0),
+                Water.new(318,32,0),
+                Water.new(350,32,0),
+                Water.new(286,64,0),
+                Water.new(318,64,0),
+                Water.new(350,64,0),
+
                 Water.new(286,96,0),
-                Water.new(318,96,12),
-                Water.new(350,96,24),
+                Water.new(318,96,0),
+                Water.new(350,96,0),
                 Water.new(286,128,0),
-                Water.new(318,128,12),
-                Water.new(350,128,24),
+                Water.new(318,128,0),
+                Water.new(350,128,0),
                 Water.new(286,160,0),
-                Water.new(318,160,12),
-                Water.new(350,160,24),
+                Water.new(318,160,0),
+                Water.new(350,160,0),
+
+                Water.new(286,192,0),
+                Water.new(318,192,0),
+                Water.new(350,192,0),
+                Water.new(286,224,0),
+                Water.new(318,224,0),
+                Water.new(350,224,0),
+                Water.new(286,256,0),
+                Water.new(318,256,0),
+                Water.new(350,256,0),
+
+                Water.new(286,-32,0),
+                Water.new(318,-32,0),
+                Water.new(350,-32,0),
+                Water.new(286,-64,0),
+                Water.new(318,-64,0),
+                Water.new(350,-64,0),
+                Water.new(286,-96,0),
+                Water.new(318,-96,0),
+                Water.new(350,-96,0),
+
+                Water.new(192,-32,0),
+                Water.new(224,-32,0),
+                Water.new(256,-32,0),
+                Water.new(192,-64,0),
+                Water.new(224,-64,0),
+                Water.new(256,-64,0),
+                Water.new(192,-96,0),
+                Water.new(224,-96,0),
+                Water.new(256,-96,0),
 
                 Building.new(64,64,0),
                 Panel.new(0,32,0),
@@ -546,7 +586,10 @@ class MapTest < GameMapScene
 
     if Input.keepPressed(Key::KeyboardReturn) && !@standby && @player.currentMovementDistance == 0 && @player.x == 0 && @player.y == 0 && @player.lookingUp
       @standby = true
-      @message = GameMessageScene.new("Salut!",0)
+      @message = GameMessageScene.new("Salut! C'est parti !",0)
+      @backgroundMusic.stop
+      @standby = true
+      @battle = GameBattleScene.new(0)
     end
 
     def drawGraphics
@@ -560,8 +603,10 @@ class MapTest < GameMapScene
 
       if @standby
         @message.update if @message != nil
+        @battle.update if @battle != nil
       else
         @message = nil
+        @battle = nil
       end
     end
 
